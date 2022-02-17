@@ -7,7 +7,7 @@ import java.io.File;
  * This java file displays System Information.
  */
 
-public class systemInfo {
+public class SystemInfo {
 
     /**
      * Created a main function to display username, user home directory, Memory,  cores, name and version of OS.
@@ -23,7 +23,7 @@ public class systemInfo {
         long file = new File("/home").getUsableSpace();
         int cores = Runtime.getRuntime().availableProcessors();
         System.out.println("username = " + userName);
-        System.out.println("The User Home Directory is "+userHomeDir);
+        System.out.println("The User Home Directory is "+ userHomeDir);
         System.out.println("Total memory is: " + memory.totalMemory());
         System.out.println("Total no. of cores are: " + cores);
         System.out.println("Total Space is: " + file);
