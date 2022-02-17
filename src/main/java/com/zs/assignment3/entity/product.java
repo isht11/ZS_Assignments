@@ -1,19 +1,19 @@
 /**
  * @author: Ishtmeet Singh Arora
  */
-package src.main.java.com.zs.assignment3.Entity;
+package com.zs.assignment3.entity;
 
 /**
  * This class is a basic blueprint of the products in the list.
  */
-public class Product {
+public class product {
     private int product_id;
     private String product_name;
     private Double product_price;
     private String product_desc;
     private String category;
     private int quantity;
-    public Product () {}
+    public product() {}
 
     /**
      * This is a constructor to initialize all the variables in the product class.
@@ -24,7 +24,7 @@ public class Product {
      * @param category
      * @param quantity
      */
-    public Product(int product_id, String product_name, Double product_price, String product_desc, String category, int quantity){
+    public product(int product_id, String product_name, Double product_price, String product_desc, String category, int quantity){
         this.product_name=product_name;
         this.product_price=product_price;
         this.product_id=product_id;
