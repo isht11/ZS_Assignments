@@ -44,9 +44,9 @@ public class productOperations {
     public void updateProduct(int productId, String productName ,Double price ,String desc ,String category, int quantity)
     {
             product p = searchProduct(productId);
-            p.setProduct_name(productName);
-            p.setProduct_price(price);
-            p.setProduct_desc(desc);
+            p.setProductName(productName);
+            p.setPrice(price);
+            p.setDesc(desc);
             p.setCategory(category);
             p.setQuantity(quantity);
 
@@ -69,7 +69,7 @@ public class productOperations {
      */
     public product searchProduct(int productId){
         for (product p: productDatabase) {
-            if (p.getProduct_id() == productId) {
+            if (p.getProductId() == productId) {
                 return p;
             }
         }

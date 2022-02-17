@@ -85,7 +85,7 @@ public class productController {
         System.out.println("Enter Product ID to delete a Product : ");
         int productId = scanner.nextInt();
         int flag = 0;
-        if (productService.searchProduct(productId).getProduct_id()==productId) {
+        if (productService.searchProduct(productId).getProductId()==productId) {
 
             productService.deleteProduct(productId);
             flag=1;
@@ -118,7 +118,7 @@ public class productController {
         System.out.println("enter product category");
         String category = scanner.next();
         int flag = 0;
-        if (productService.searchProduct(productId).getProduct_id()==productId){
+        if (productService.searchProduct(productId).getProductId()==productId){
             productService.updateProduct(productId, productName ,price , desc ,category, quantity);
             flag = 1;
         }
