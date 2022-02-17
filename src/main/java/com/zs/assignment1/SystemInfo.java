@@ -19,7 +19,7 @@ public class SystemInfo {
         String userHomeDir = System.getProperty("user.home");
         Runtime memory = Runtime.getRuntime();
         String nameOfOs = System.getProperty("os.name");
-        String versionOfOS = System.getProperty("sun.arch.data.model");
+        String versionOfOs = System.getProperty("sun.arch.data.model");
         long file = new File("/home").getUsableSpace();
         int cores = Runtime.getRuntime().availableProcessors();
         System.out.println("username = " + userName);
@@ -28,6 +28,6 @@ public class SystemInfo {
         System.out.println("Total no. of cores are: " + cores);
         System.out.println("Total Space is: " + file);
         System.out.println("Name of the operating system is: " + nameOfOs);
-        System.out.println("Version of the operating system is: " + versionOfOS);
+        System.out.println("Version of the operating system is: " + versionOfOs);
     }
 }
