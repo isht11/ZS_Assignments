@@ -3,18 +3,18 @@
  */
 package com.zs.assignment3.controller;
 
-import com.zs.assignment3.services.productOperations;
+import com.zs.assignment3.services.ProductOperations;
 import java.util.Scanner;
 
 /**
  * This class is used to invoke all the crud operations from the productOperations class.
  */
-public class productController {
+public class ProductController {
 
-    private productOperations productService;
+    private ProductOperations productService;
     private Scanner scanner;
-    public productController(){
-        productService= new productOperations();
+    public ProductController(){
+        productService= new ProductOperations();
         scanner = new Scanner(System.in);
     }
 

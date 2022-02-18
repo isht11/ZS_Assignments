@@ -6,14 +6,14 @@ package com.zs.assignment3.entity;
 /**
  * This class is a basic blueprint of the products in the list.
  */
-public class product {
+public class Product {
     private int productId;
     private String productName;
     private Double price;
     private String desc;
     private String category;
     private int quantity;
-    public product() {}
+    public Product() {}
 
     /**
      * This is a constructor to initialize all the variables in the product class.
@@ -24,7 +24,7 @@ public class product {
      * @param category
      * @param quantity
      */
-    public product(int productId, String productName, Double price, String desc, String category, int quantity){
+    public Product(int productId, String productName, Double price, String desc, String category, int quantity){
         this.productName=productName;
         this.price=price;
         this.productId=productId;

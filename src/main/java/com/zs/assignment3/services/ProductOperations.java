@@ -5,14 +5,14 @@ package com.zs.assignment3.services;
 
 import java.util.List;
 import java.util.ArrayList;
-import com.zs.assignment3.entity.product;
+import com.zs.assignment3.entity.Product;
 
 /**
  * This class performs CRUD operations on the products.
  */
-public class productOperations {
-    public List<product> productDatabase;
-    public productOperations(){
+public class ProductOperations {
+    public List<Product> productDatabase;
+    public ProductOperations(){
         productDatabase = new ArrayList<>();
     }
 
@@ -27,8 +27,8 @@ public class productOperations {
      */
     public void addNewProduct(int productId, String productName ,Double price ,String desc ,String category, int quantity) {
 
-        product p = new product(productId, productName , price , desc , category, quantity);
-        productDatabase.add(p);
+        Product item = new Product(productId, productName , price , desc , category, quantity);
+        productDatabase.add(item);
 
     }
 
@@ -43,12 +43,12 @@ public class productOperations {
      */
     public void updateProduct(int productId, String productName ,Double price ,String desc ,String category, int quantity)
     {
-            product p = searchProduct(productId);
-            p.setProductName(productName);
-            p.setPrice(price);
-            p.setDesc(desc);
-            p.setCategory(category);
-            p.setQuantity(quantity);
+            Product item = searchProduct(productId);
+            item.setProductName(productName);
+            item.setPrice(price);
+            item.setDesc(desc);
+            item.setCategory(category);
+            item.setQuantity(quantity);
 
     }
 
@@ -58,8 +58,8 @@ public class productOperations {
      */
     public void deleteProduct(int productId)
     {
-        product p = searchProduct(productId);
-        productDatabase.remove(p);
+        Product item = searchProduct(productId);
+        productDatabase.remove(item);
     }
 
     /**
@@ -67,17 +67,17 @@ public class productOperations {
      * @param productId
      * @return
      */
-    public product searchProduct(int productId){
-        for (product p: productDatabase) {
-            if (p.getProductId() == productId) {
-                return p;
+    public Product searchProduct(int productId){
+        for (Product item: productDatabase) {
+            if (item.getProductId() == productId) {
+                return item;
             }
         }
         return null;
     }
 
     /**
-     * This method returns a string of all the product details of the given product Id.
+     * This method returns a string of all the product details of the given product id.
      * @param productId
      * @return
      */

@@ -3,18 +3,18 @@
  */
 package com.zs.assignment3;
 
-import com.zs.assignment3.controller.productController;
+import com.zs.assignment3.controller.ProductController;
 
 /**
  * This class calls the controller to run the project.
  */
-public class main {
+public class ProductCatalogueMain {
     /**
      * This is the main method.
      * @param args
      */
     public static void main(String[] args) {
-        productController controller = new productController();
+        ProductController controller = new ProductController();
         controller.run();
     }
 }
