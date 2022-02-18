@@ -6,7 +6,7 @@ package com.zs.assignment2;
 /**
  * This class contains the blueprint of the matrix.
  */
-public class matrix {
+public class Matrix {
 
     int row;
     int column;
@@ -14,10 +14,10 @@ public class matrix {
 
     /**
      * This is a constructor that initializes the matrix row, column and data.
-     * @param row
-     * @param column
+     * @param row rows of the matrix
+     * @param column columns of the matrix
      */
-    public matrix(int row, int column){
+    public Matrix(int row, int column){
         this.row=row;
         this.column=column;
         data=new int[row][column];
