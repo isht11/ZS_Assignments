@@ -3,20 +3,22 @@
  */
 package com.zs.assignment4.services;
 
+import com.zs.assignment4.entity.Tree;
 import com.zs.assignment4.lru.LruCache;
-import com.zs.assignment4.entity.Database;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * This class calls the display and search operations on the categories.
  */
 public class CategoryService {
-    Database categories;
+    Tree database;
     LruCache lrucache;
 
     public CategoryService() {
 
         lrucache = new LruCache(3);
-        categories = new Database();
+        database = new Tree("Categories");
 
     }
 
@@ -24,16 +26,19 @@ public class CategoryService {
      * This method displays the whole database in a tree format.
      */
     public void displayAll() {
-        for (String category : categories.getCategories().keySet()) {
-            System.out.println("\n" + category + "---\n");
-            for (String subCategory1 : categories.getCategories().get(category).keySet()) {
-                System.out.println("\n" + subCategory1 + "---\n");
-                for (String subCategory2 : categories.getCategories().get(category).get(subCategory1).keySet()) {
-                    System.out.println(subCategory2);
+        Tree traversal=database;
+        Queue<Tree> nodesQueue = new LinkedList<>();
+        nodesQueue.add(traversal);
+        while(!nodesQueue.isEmpty()){
+            Tree current = nodesQueue.peek();
+            nodesQueue.remove();
+            System.out.println(current.getCategory()+"--");
+            for(int i=0;i<current.getNodes().size();i++){
+                    nodesQueue.add(current.getNodes().get(i));
                 }
             }
+
         }
-    }
 
     /**
      * This method searches for the string in the database so that it can be added to the lruCache.
@@ -41,20 +46,22 @@ public class CategoryService {
      * @return
      */
     public boolean find(String category){
-        for (String toFind1 : categories.getCategories().keySet()) {
-            if(toFind1.equals(category)){
+        Tree traversal=database;
+        Queue<Tree> nodesQueue = new LinkedList<>();
+        nodesQueue.add(traversal);
+        while(!nodesQueue.isEmpty()){
+            Tree current = nodesQueue.peek();
+            nodesQueue.remove();
+            if(current.getCategory().equals(category)){
+                System.out.println("Category Found");
                 return true;
             }
-            for (String toFind2 : categories.getCategories().get(toFind1).keySet()) {
-                if(toFind2.equals(category)){
-                    return true;
-                }
-                for (String toFind3 : categories.getCategories().get(toFind1).get(toFind2).keySet()) {
-                    if(toFind3.equals(category)){
-                        return true;
-                    }
+            else{
+                for(int i=0;i<current.getNodes().size();i++){
+                    nodesQueue.add(current.getNodes().get(i));
                 }
             }
+
         }
         return false;
     }
@@ -75,6 +82,39 @@ public class CategoryService {
             System.out.println("Category Found");
         }
         lrucache.printCache();
+
+    }
+
+    /**
+     * This method adds a new category as on of the child of the parent provided.
+     * @param category
+     * @param parent
+     */
+    public void addCategory(String category,String parent) {
+        Tree traversal=database;
+        Queue<Tree> nodesQueue = new LinkedList<>();
+        nodesQueue.add(traversal);
+        boolean flag=false;
+        while(!nodesQueue.isEmpty()){
+            Tree current = nodesQueue.peek();
+            nodesQueue.remove();
+            if(current.getCategory().equals(parent)){
+                Tree newOne=new Tree(category);
+                current.getNodes().add(newOne);
+                System.out.println("Category Added");
+                flag=true;
+            }
+            else{
+                for(int i=0;i<current.getNodes().size();i++){
+                    nodesQueue.add(current.getNodes().get(i));
+                }
+            }
+
+        }
+        if(!flag){
+            System.out.println("No Such Parent Category");
+        }
+
 
     }
 }

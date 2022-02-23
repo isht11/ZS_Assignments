@@ -16,8 +16,6 @@ public class MatrixMain {
     public static void main(String[] args) {
         MatrixComputations matrixServices = new MatrixComputations();
         Scanner scanner = new Scanner(System.in);
-        Matrix matrix1 = readMatrix();
-        Matrix matrix2 = readMatrix();
         System.out.print("\n");
         boolean flag;
         int choice;
@@ -27,31 +25,39 @@ public class MatrixMain {
             choice = scanner.nextInt();
             switch (choice) {
                 case 1:
+                    Matrix matrix1 = readMatrix();
+                    Matrix matrix2 = readMatrix();
                     Matrix added=matrixServices.addMatrices(matrix1, matrix2);
                     if(added!=null){
                         printMatrix(added);
                     }
                     break;
                 case 2:
-                    Matrix subtracted=matrixServices.subMatrices(matrix1, matrix2);
+                    Matrix matrix3 = readMatrix();
+                    Matrix matrix4 = readMatrix();
+                    Matrix subtracted=matrixServices.subMatrices(matrix3, matrix4);
                     if(subtracted!=null){
                         printMatrix(subtracted);
                     }
                     break;
                 case 3:
-                    Matrix multiplied=matrixServices.mulMatrices(matrix1, matrix2);
+                    Matrix matrix5 = readMatrix();
+                    Matrix matrix6 = readMatrix();
+                    Matrix multiplied=matrixServices.mulMatrices(matrix5, matrix6);
                     if(multiplied!=null){
                         printMatrix(multiplied);
                     }
                     break;
                 case 4:
+                    Matrix matrix7 = readMatrix();
                     System.out.println("Enter k : ");
                     int k= scanner.nextInt();
-                    Matrix kMultiplied=matrixServices.kMatrixMultiply(matrix1, k);
+                    Matrix kMultiplied=matrixServices.kMatrixMultiply(matrix7, k);
                     printMatrix(kMultiplied);
                     break;
                 case 5:
-                    Matrix transposed=matrixServices.transpose(matrix1);
+                    Matrix matrix8 = readMatrix();
+                    Matrix transposed=matrixServices.transpose(matrix8);
                     printMatrix(transposed);
                     break;
                 default:

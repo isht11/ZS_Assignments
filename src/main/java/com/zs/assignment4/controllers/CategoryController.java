@@ -23,7 +23,7 @@ public class CategoryController {
         int choice;
         do {
 
-            System.out.println("enter your choice to perform the operation on Category\n 1.Display Hierarchy \n 2. Search of a Category \n");
+            System.out.println("enter your choice to perform the operation on Category\n 1.Display Hierarchy \n 2. Search of a Category \n 3.Add Category\n");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1:
@@ -33,6 +33,13 @@ public class CategoryController {
                     System.out.println("Enter category to search");
                     String category = scanner.next();
                     categoryOperations.search(category);
+                    break;
+                case 3:
+                    System.out.println("Enter category to add");
+                    String categoryUser = scanner.next();
+                    System.out.println("Enter parent category");
+                    String parentCategory = scanner.next();
+                    categoryOperations.addCategory(categoryUser, parentCategory);
                     break;
                 default:
                     System.out.println("Not a valid choice");
