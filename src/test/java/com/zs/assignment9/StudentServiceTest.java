@@ -6,12 +6,12 @@ package com.zs.assignment9;
 import com.zs.assignment9.dao.StudentDao;
 import com.zs.assignment9.entity.Student;
 import com.zs.assignment9.service.StudentService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -19,18 +19,15 @@ import static org.mockito.Mockito.verify;
 /**
  * Tests the student service class.
  */
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
+
+    @InjectMocks
+    StudentService underTest;
+
     @Mock
-    private StudentService underTest;
-    private StudentDao studentDao;
-
-    @BeforeEach
-    void setUp() {
-        studentDao=new StudentDao();
-        underTest=new StudentService();
-    }
-
+    StudentDao studentDao;
     /**
      * Tests whether the student gets passed to the student dao class or not.
      */

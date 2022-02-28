@@ -45,6 +45,7 @@ public class StudentDao {
      */
     public void save(Student student) {
         Connection con = this.connectionToDatabase();
+
         Statement statement = null;
         try {
         statement = con.createStatement();
@@ -52,7 +53,7 @@ public class StudentDao {
         statement.executeUpdate(query);
         }
         catch (SQLException e) {
-        System.out.println("Something went wrong..");
+            System.out.println("Something went wrong..");
         }
     }
 
