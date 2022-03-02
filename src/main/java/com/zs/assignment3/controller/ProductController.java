@@ -84,7 +84,7 @@ public class ProductController {
     {
         System.out.println("Enter Product ID to delete a Product : ");
         int productId = scanner.nextInt();
-        if (productService.searchProduct(productId).getProductId()==productId) {
+        if (productService.searchProduct(productId)!=null) {
 
             productService.deleteProduct(productId);
             System.out.println("Product has been removed.");
