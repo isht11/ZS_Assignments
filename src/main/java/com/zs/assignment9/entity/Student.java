@@ -7,24 +7,23 @@ package com.zs.assignment9.entity;
  * Blueprint of the student class.
  */
 public class Student {
-    private Integer student_id;
+    private Integer studentId;
     private String firstname;
     private String lastname;
 
-
-    public int getStudent_id() {
-        return student_id;
-    }
-
-    public Student(Integer student_id, String firstname, String lastname) {
-        this.student_id = student_id;
+    public Student(Integer studentId, String firstname, String lastname) {
+        this.studentId = studentId;
         this.firstname = firstname;
         this.lastname = lastname;
     }
     public Student(){}
 
-    public void setStudent_id(int student_id) {
-        this.student_id = student_id;
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
     }
 
     public String getFirstname() {

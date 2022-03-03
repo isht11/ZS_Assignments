@@ -4,7 +4,10 @@
 package com.zs.assignment9.controller;
 
 import com.zs.assignment9.entity.Student;
+import com.zs.assignment9.exceptions.ThisIsMyException;
 import com.zs.assignment9.service.StudentService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Scanner;
 
@@ -16,7 +19,7 @@ public class StudentController {
 
     private StudentService  studentService;
     private Scanner scanner;
-
+    static Logger logger = LogManager.getLogger(StudentController.class.getName());
     /**
      * Constructor that creates a new object of the service class.
      */
@@ -26,13 +29,12 @@ public class StudentController {
     }
 
 
-    public void run()
-    {
+    public void run() throws ThisIsMyException {
         boolean flag  = true;
 
         do{
 
-            System.out.println("\n 1. add student \n 2. get student by id");
+            logger.info("\n 1. add student \n 2. get student by id");
             int choice  =  scanner.nextInt();
             switch (choice){
                 case 1:
@@ -42,9 +44,9 @@ public class StudentController {
                     this.getStudentById();
                     break;
                 default:
-                    System.out.println("Enter character for continue or stop");
+                    logger.info("Enter character for continue or stop");
                     char ch  =  scanner.next().charAt(0);
-                    System.out.println("\n Y for continue \n N for stop");
+                    logger.info("\n Y for continue \n N for stop");
                     if(ch=='Y'){
                         flag =  true;
                     }else{
@@ -52,17 +54,16 @@ public class StudentController {
                     }
             }
 
-
-        }while(flag==true);
+        }while(flag);
 
     }
 
     /**
      * Gets the details of the student by passing the id.
      */
-    private void getStudentById() {
+    private void getStudentById() throws ThisIsMyException {
 
-        System.out.println("Enter student ID to get student");
+        logger.info("Enter student ID to get student");
         Integer id  =  scanner.nextInt();
         studentService.getStudent(id);
     }
@@ -70,15 +71,14 @@ public class StudentController {
     /**
      * Creates a new entry in the database by passing the details entered by the user.
      */
-    private void addStudent()
-    {
-        System.out.println("Enter student Id");
+    private void addStudent() throws ThisIsMyException {
+        logger.info("Enter student Id");
         Integer id = scanner.nextInt();
-        System.out.println("Enter student firstName");
+        logger.info("Enter student firstName");
         String firstName = scanner.next();
-        System.out.println("Enter student lastName");
+        logger.info("Enter student lastName");
         String lastName  =  scanner.next();
         Student input= new Student(id , firstName , lastName);
-        this.studentService.createStudent(input);
+        studentService.createStudent(input);
     }
 }

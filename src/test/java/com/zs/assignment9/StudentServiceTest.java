@@ -5,16 +5,15 @@ package com.zs.assignment9;
 
 import com.zs.assignment9.dao.StudentDao;
 import com.zs.assignment9.entity.Student;
+import com.zs.assignment9.exceptions.ThisIsMyException;
 import com.zs.assignment9.service.StudentService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests the student service class.
@@ -23,34 +22,59 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class StudentServiceTest {
 
-    @InjectMocks
-    StudentService underTest;
+    private StudentService studentService;
+    private StudentDao studentDao;
 
-    @Mock
-    StudentDao studentDao;
-    /**
-     * Tests whether the student gets passed to the student dao class or not.
-     */
-    @Test
-    void canCreateStudent() {
-        Student expectedStudent = new Student(101 , "ishtmeet" , "arora");
-        underTest.createStudent(expectedStudent);
-        ArgumentCaptor<Student>studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-        verify(studentDao).save(studentArgumentCaptor.capture());
-        Student value= studentArgumentCaptor.getValue();
-        assertEquals(expectedStudent,value);
+    @BeforeEach
+    void setup() {
+
+        studentDao = mock(StudentDao.class);
+        studentService = new StudentService(studentDao);
     }
 
     /**
-     * Tests whether the student id gets passed to the student dao class or not.
+     * Tests whether the student dao class method runs or not.
+     * @throws ThisIsMyException
      */
     @Test
-    void getStudent() {
-        int id=5;
-        underTest.getStudent(id);
-        ArgumentCaptor<Integer>studentArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
-        verify(studentDao).getById(studentArgumentCaptor.capture());
-        int value= studentArgumentCaptor.getValue();
-        assertEquals(id,value);
+    void canCreateStudent() throws ThisIsMyException {
+        Student expectedStudent = new Student(101 , "ishtmeet" , "arora");
+        studentService.createStudent(expectedStudent);
+        verify(studentDao, times(1)).save(expectedStudent);
+    }
+
+    /**
+     * Tests whether the exception gets thrown or not.
+     * @throws ThisIsMyException
+     */
+    @Test
+    void canCreateStudentExceptionTest() throws ThisIsMyException {
+        Student expectedStudent = new Student(101 , "ishtmeet" , "arora");
+        doThrow(ThisIsMyException.class).when(studentDao).save(expectedStudent);
+        assertThrows(ThisIsMyException.class, ()-> studentService.createStudent(expectedStudent));
+    }
+
+    /**
+     * Tests whether the exception gets thrown or not.
+     * @throws ThisIsMyException
+     */
+    @Test
+    void getStudent() throws ThisIsMyException {
+        int id=101;
+        doThrow(ThisIsMyException.class).when(studentDao).getById(id);
+        assertThrows(ThisIsMyException.class, ()-> studentService.getStudent(id));
+
+    }
+
+    /**
+     * Tests whether the student dao method runs or not.
+     * @throws ThisIsMyException
+     */
+    @Test
+    void testGetStudentException() throws ThisIsMyException {
+        int id=101;
+        studentService.getStudent(id);
+        verify(studentDao, times(1)).getById(id);
+
     }
 }
