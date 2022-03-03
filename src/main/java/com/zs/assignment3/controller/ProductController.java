@@ -84,16 +84,11 @@ public class ProductController {
     {
         System.out.println("Enter Product ID to delete a Product : ");
         int productId = scanner.nextInt();
-        int flag = 0;
-        if (productService.searchProduct(productId).getProductId()==productId) {
+        if (productService.searchProduct(productId)!=null) {
 
             productService.deleteProduct(productId);
-            flag=1;
-        }
-        if(flag == 1){
             System.out.println("Product has been removed.");
         }
-
         else{
             System.out.println("The product provided do not exists!");
         }
@@ -120,12 +115,7 @@ public class ProductController {
         int flag = 0;
         if (productService.searchProduct(productId).getProductId()==productId){
             productService.updateProduct(productId, productName ,price , desc ,category, quantity);
-            flag = 1;
-        }
-        if(flag==1) {
-
             System.out.println("Product Updated");
-
         }
         else{
 
