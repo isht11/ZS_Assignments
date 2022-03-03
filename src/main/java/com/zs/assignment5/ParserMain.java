@@ -4,18 +4,16 @@
 package com.zs.assignment5;
 
 import com.zs.assignment5.controller.ParserController;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.zs.assignment5.exceptions.FileCannotBeFoundException;
+import com.zs.assignment5.exceptions.NotAbleToParseException;
 
 /**
  * This calls the controller class to run the operations.
  */
 public class ParserMain {
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws NotAbleToParseException, FileCannotBeFoundException {
         ParserController controller= new ParserController();
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2022-01-01");
-        controller.run(date);
+        controller.run();
     }
 }
