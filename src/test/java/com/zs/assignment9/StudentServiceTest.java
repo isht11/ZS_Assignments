@@ -5,7 +5,7 @@ package com.zs.assignment9;
 
 import com.zs.assignment9.dao.StudentDao;
 import com.zs.assignment9.entity.Student;
-import com.zs.assignment9.exceptions.ThisIsMyException;
+import com.zs.assignment9.exceptions.InternalServerException;
 import com.zs.assignment9.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,10 +34,10 @@ class StudentServiceTest {
 
     /**
      * Tests whether the student dao class method runs or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerException
      */
     @Test
-    void canCreateStudent() throws ThisIsMyException {
+    void canCreateStudent() throws InternalServerException {
         Student expectedStudent = new Student(101 , "ishtmeet" , "arora");
         studentService.createStudent(expectedStudent);
         verify(studentDao, times(1)).save(expectedStudent);
@@ -45,33 +45,33 @@ class StudentServiceTest {
 
     /**
      * Tests whether the exception gets thrown or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerException
      */
     @Test
-    void canCreateStudentExceptionTest() throws ThisIsMyException {
+    void canCreateStudentExceptionTest() throws InternalServerException {
         Student expectedStudent = new Student(101 , "ishtmeet" , "arora");
-        doThrow(ThisIsMyException.class).when(studentDao).save(expectedStudent);
-        assertThrows(ThisIsMyException.class, ()-> studentService.createStudent(expectedStudent));
+        doThrow(InternalServerException.class).when(studentDao).save(expectedStudent);
+        assertThrows(InternalServerException.class, ()-> studentService.createStudent(expectedStudent));
     }
 
     /**
      * Tests whether the exception gets thrown or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerException
      */
     @Test
-    void getStudent() throws ThisIsMyException {
+    void getStudent() throws InternalServerException {
         int id=101;
-        doThrow(ThisIsMyException.class).when(studentDao).getById(id);
-        assertThrows(ThisIsMyException.class, ()-> studentService.getStudent(id));
+        doThrow(InternalServerException.class).when(studentDao).getById(id);
+        assertThrows(InternalServerException.class, ()-> studentService.getStudent(id));
 
     }
 
     /**
      * Tests whether the student dao method runs or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerException
      */
     @Test
-    void testGetStudentException() throws ThisIsMyException {
+    void testGetStudentException() throws InternalServerException {
         int id=101;
         studentService.getStudent(id);
         verify(studentDao, times(1)).getById(id);

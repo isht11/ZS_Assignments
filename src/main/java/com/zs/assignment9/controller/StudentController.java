@@ -4,7 +4,7 @@
 package com.zs.assignment9.controller;
 
 import com.zs.assignment9.entity.Student;
-import com.zs.assignment9.exceptions.ThisIsMyException;
+import com.zs.assignment9.exceptions.InternalServerException;
 import com.zs.assignment9.service.StudentService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,76 +17,71 @@ import java.util.Scanner;
 public class StudentController {
 
 
-    private StudentService  studentService;
+    private StudentService studentService;
     private Scanner scanner;
     static Logger logger = LogManager.getLogger(StudentController.class.getName());
+
     /**
      * Constructor that creates a new object of the service class.
      */
-    public StudentController(){
+    public StudentController() {
         studentService = new StudentService();
-        scanner= new Scanner(System.in);
+        scanner = new Scanner(System.in);
     }
 
 
-    public void run()  {
-        boolean flag  = true;
+    public void run() {
+        boolean flag = true;
+        try {
+            do {
 
-        do{
-
-            logger.info("\n 1. add student \n 2. get student by id");
-            int choice  =  scanner.nextInt();
-            switch (choice){
-                case 1:
-                    try {
+                logger.info("\n 1. add student \n 2. get student by id");
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
                         this.addStudent();
-                    } catch (ThisIsMyException e) {
-                        logger.info(e.getMessage());
-                    }
-                    break;
-                case 2:
-                    try {
+                        break;
+                    case 2:
                         this.getStudentById();
-                    } catch (ThisIsMyException e) {
-                        logger.info(e.getMessage());
-                    }
-                    break;
-                default:
-                    logger.info("Enter character for continue or stop");
-                    char ch  =  scanner.next().charAt(0);
-                    logger.info("\n Y for continue \n N for stop");
-                    if(ch=='Y'){
-                        flag =  true;
-                    }else{
-                        flag =  false;
-                    }
-            }
+                        break;
+                    default:
+                        logger.info("Enter character for continue or stop");
+                        char ch = scanner.next().charAt(0);
+                        logger.info("\n Y for continue \n N for stop");
+                        if (ch == 'Y') {
+                            flag = true;
+                        } else {
+                            flag = false;
+                        }
+                }
 
-        }while(flag);
-
+            } while (flag);
+        } catch (InternalServerException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
      * Gets the details of the student by passing the id.
      */
-    private void getStudentById() throws ThisIsMyException {
+    private void getStudentById() throws InternalServerException {
 
         logger.info("Enter student ID to get student");
-        Integer id  =  scanner.nextInt();
+        Integer id = scanner.nextInt();
         studentService.getStudent(id);
     }
 
     /**
      * Creates a new entry in the database by passing the details entered by the user.
      */
-    private void addStudent() throws ThisIsMyException {
+    private void addStudent() throws InternalServerException {
         logger.info("Enter student Id");
         Integer id = scanner.nextInt();
         logger.info("Enter student firstName");
         String firstName = scanner.next();
         logger.info("Enter student lastName");
-        String lastName  =  scanner.next();
-        Student input= new Student(id , firstName , lastName);
+        String lastName = scanner.next();
+        Student input = new Student(id, firstName, lastName);
         studentService.createStudent(input);
     }
 }

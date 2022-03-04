@@ -4,7 +4,7 @@
 package com.zs.assignment9.dao;
 
 import com.zs.assignment9.entity.Student;
-import com.zs.assignment9.exceptions.ThisIsMyException;
+import com.zs.assignment9.exceptions.InternalServerException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,13 +28,13 @@ public class StudentDao {
      *
      * @return
      */
-    public Connection connectionToDatabase() throws ThisIsMyException, SQLException {
+    public Connection connectionToDatabase() throws InternalServerException {
         Connection conn;
         try {
             Class.forName("org.postgresql.Driver");
             conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (SQLException | ClassNotFoundException e) {
-            throw new ThisIsMyException("This is an error");
+            throw new InternalServerException("Either the class was not found or there was an sql exception");
         }
         return conn;
     }
@@ -44,7 +44,7 @@ public class StudentDao {
      *
      * @param student
      */
-    public void save(Student student) throws ThisIsMyException {
+    public void save(Student student) throws InternalServerException {
         Statement statement;
         final String QUERY = "INSERT INTO student2 VALUES (" + student.getStudentId() + "," + student.getFirstname() + " ," + student.getLastname() + ");";
         try {
@@ -53,7 +53,7 @@ public class StudentDao {
             statement.executeUpdate(QUERY);
             con.close();
         } catch (SQLException e) {
-            throw new ThisIsMyException("This is an exception");
+            throw new InternalServerException("There was an sql exception");
         }
     }
 
@@ -62,7 +62,7 @@ public class StudentDao {
      *
      * @param id
      */
-    public void getById(Integer id) throws ThisIsMyException {
+    public void getById(Integer id) throws InternalServerException {
         final String QUERY = "SELECT * FROM student2 WHERE id=" + id;
         Statement statement;
         try {
@@ -76,7 +76,7 @@ public class StudentDao {
             }
 
         } catch (SQLException e) {
-            throw new ThisIsMyException("This is an error");
+            throw new InternalServerException("There was an sql exception");
         }
     }
 }
