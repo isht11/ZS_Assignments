@@ -5,7 +5,7 @@ package com.zs.assignment10.dao;
 
 import com.zs.assignment10.controller.ProductController;
 import com.zs.assignment10.entity.Product;
-import com.zs.assignment10.exceptions.ThisIsMyException;
+import com.zs.assignment10.exceptions.InternalServerError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,18 +33,18 @@ public class ProductDao {
      *
      * @return
      */
-    public Connection connectionToDatabase() throws ThisIsMyException {
+    public Connection connectionToDatabase() throws InternalServerError {
         Connection conn;
         try {
             Class.forName("org.postgresql.Driver");
             conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (SQLException | ClassNotFoundException e) {
-            throw new ThisIsMyException("SQL exception occurred");
+            throw new InternalServerError("Class not found error or sql error");
         }
         return conn;
     }
 
-    public void save(Product product) throws ThisIsMyException {
+    public void save(Product product) throws InternalServerError {
 
         Connection con = this.connectionToDatabase();
         Statement statement;
@@ -54,12 +54,12 @@ public class ProductDao {
             statement.executeUpdate(query);
             con.close();
         } catch (SQLException e) {
-            throw new ThisIsMyException("SQL exception occurred");
+            throw new InternalServerError("SQL exception occurred");
         }
 
     }
 
-    public Product getByID(Integer productCode) throws ThisIsMyException {
+    public Product getByID(Integer productCode) throws InternalServerError {
 
         final String query = "select * from product where productCode = ?";
         Product product = new Product();
@@ -79,12 +79,12 @@ public class ProductDao {
                 logger.info("Product Does not exist");
             }
         } catch (SQLException e) {
-            throw new ThisIsMyException("There is an error");
+            throw new InternalServerError("There is a sql exception");
         }
         return product;
     }
 
-    public void updateByID(Integer productCode, Product product) throws ThisIsMyException {
+    public void updateByID(Integer productCode, Product product) throws InternalServerError {
         final String QUERY = "update product set productName=?, price=?, quantity=? where productCode=?";
         try {
             Connection con = this.connectionToDatabase();
@@ -95,12 +95,12 @@ public class ProductDao {
             preparedStatement.executeUpdate();
             con.close();
         } catch (SQLException e) {
-            throw new ThisIsMyException("There is an error");
+            throw new InternalServerError("Sql exception occurred");
         }
 
     }
 
-    public void deleteById(Integer productCode) throws ThisIsMyException {
+    public void deleteById(Integer productCode) throws InternalServerError {
         final String QUERY = "DELETE FROM product where productCode =" + productCode;
         Statement statement;
         try {
@@ -109,11 +109,11 @@ public class ProductDao {
             statement.executeUpdate(QUERY);
             con.close();
         } catch (SQLException e) {
-            throw new ThisIsMyException("There is an error");
+            throw new InternalServerError("There is a SQL error");
         }
     }
 
-    public List<Product> findAll() throws ThisIsMyException {
+    public List<Product> findAll() throws InternalServerError {
         ArrayList<Product> productList = new ArrayList<>();
         final String QUERY = "select * from product";
         Statement statement;
@@ -131,13 +131,13 @@ public class ProductDao {
             }
             con.close();
         } catch (SQLException e) {
-            throw new ThisIsMyException("Error Occurred");
+            throw new InternalServerError("There is an SQL exception");
         }
         return productList;
 
     }
 
-    public boolean exist(int productCode) throws ThisIsMyException {
+    public boolean exist(int productCode) throws InternalServerError {
         ResultSet resultSet;
         final String QUERY = "SELECT COUNT(*) FROM product WHERE productCode = ?";
         try {
@@ -152,7 +152,7 @@ public class ProductDao {
             }
             con.close();
         } catch (SQLException e) {
-            throw new ThisIsMyException("There is an error");
+            throw new InternalServerError("Sql error occurred");
         }
         return false;
     }

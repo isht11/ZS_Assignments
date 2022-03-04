@@ -4,7 +4,7 @@
 package com.zs.assignment10.controller;
 
 import com.zs.assignment10.entity.Product;
-import com.zs.assignment10.exceptions.ThisIsMyException;
+import com.zs.assignment10.exceptions.InternalServerError;
 import com.zs.assignment10.services.ProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,8 +80,8 @@ public class ProductController {
         boolean checkExist=false;
         try {
             checkExist = productService.productIsExist(productCode);
-        } catch (ThisIsMyException e) {
-            logger.info("There was an error");
+        } catch (InternalServerError e) {
+            logger.error(e.getMessage());
         }
         if (checkExist) {
             logger.info("Product Exist");
@@ -97,8 +97,8 @@ public class ProductController {
         List<Product> productList = null;
         try {
             productList = productService.getAllProduct();
-        } catch (ThisIsMyException e) {
-            logger.info("There was an error");
+        } catch (InternalServerError e) {
+            logger.error(e.getMessage());
         }
         for (Product product : productList) {
             this.DisplayProduct(product);
@@ -115,8 +115,8 @@ public class ProductController {
         Integer productCode = scanner.nextInt();
         try {
             productService.deleteByProductCode(productCode);
-        } catch (ThisIsMyException e) {
-           logger.info("There was an error");
+        } catch (InternalServerError e) {
+           logger.error(e.getMessage());
         }
     }
 
@@ -134,8 +134,8 @@ public class ProductController {
             if (c == 'Y') {
                 DisplayProduct(product);
             }
-        } catch (ThisIsMyException e) {
-            logger.info("There was an error");
+        } catch (InternalServerError e) {
+            logger.error(e.getMessage());
         }
     }
 
@@ -158,7 +158,7 @@ public class ProductController {
         boolean checkExist = false;
         try {
             checkExist = productService.productIsExist(productCode);
-        } catch (ThisIsMyException e) {
+        } catch (InternalServerError e) {
             logger.info("There was an error");
         }
         if (!checkExist) {
@@ -178,8 +178,8 @@ public class ProductController {
         product.setQuantity(quantity);
         try {
             productService.updateByProductCode(product.getProductCode(), product);
-        } catch (ThisIsMyException e) {
-            logger.info("There was an error");
+        } catch (InternalServerError e) {
+            logger.error(e.getMessage());
         }
     }
 
@@ -200,8 +200,8 @@ public class ProductController {
         Product product = new Product(productCode, productName, price, quantity);
         try {
             productService.insert(product);
-        } catch (ThisIsMyException e) {
-            logger.info("There was an error");
+        } catch (InternalServerError e) {
+            logger.error(e.getMessage());
         }
 
     }

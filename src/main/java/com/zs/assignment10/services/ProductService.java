@@ -5,7 +5,7 @@ package com.zs.assignment10.services;
 
 import com.zs.assignment10.dao.ProductDao;
 import com.zs.assignment10.entity.Product;
-import com.zs.assignment10.exceptions.ThisIsMyException;
+import com.zs.assignment10.exceptions.InternalServerError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,9 +29,9 @@ public class ProductService {
     /**
      * Calls the product dao to save the product passed.
      * @param product
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
-    public void insert(Product product) throws ThisIsMyException {
+    public void insert(Product product) throws InternalServerError {
             productDao.save(product);
     }
 
@@ -39,9 +39,9 @@ public class ProductService {
      * Returns the product by calling the product dao and searching using the product code.
      * @param productCode
      * @return
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
-    public Product findByProductCode(Integer productCode) throws ThisIsMyException {
+    public Product findByProductCode(Integer productCode) throws InternalServerError {
             Product product;
             product = productDao.getByID(productCode);
             return product;
@@ -52,9 +52,9 @@ public class ProductService {
      * @param productCode
      * @param product
      * @return
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
-    public void updateByProductCode(Integer productCode, Product product) throws ThisIsMyException {
+    public void updateByProductCode(Integer productCode, Product product) throws InternalServerError {
             productDao.updateByID(productCode, product);
     }
 
@@ -62,16 +62,16 @@ public class ProductService {
      * Deletes the product using the product code passed.
      * @param productCode
      */
-    public void deleteByProductCode(Integer productCode) throws ThisIsMyException {
+    public void deleteByProductCode(Integer productCode) throws InternalServerError {
             productDao.deleteById(productCode);
     }
 
     /**
      * Returns a list of all the products by calling the product dao find all method.
      * @return
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
-    public List<Product> getAllProduct() throws ThisIsMyException {
+    public List<Product> getAllProduct() throws InternalServerError {
             return productDao.findAll();
     }
 
@@ -79,9 +79,9 @@ public class ProductService {
      * Checks whether the product exists or not by calling the exist method of product dao.
      * @param productCode
      * @return
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
-    public boolean productIsExist(int productCode) throws ThisIsMyException {
+    public boolean productIsExist(int productCode) throws InternalServerError {
             return productDao.exist(productCode);
     }
 }

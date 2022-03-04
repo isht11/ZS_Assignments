@@ -5,7 +5,7 @@ package com.zs.assignment10.services;
 
 import com.zs.assignment10.dao.ProductDao;
 import com.zs.assignment10.entity.Product;
-import com.zs.assignment10.exceptions.ThisIsMyException;
+import com.zs.assignment10.exceptions.InternalServerError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +34,10 @@ class ProductServiceTest {
     /**
      * Tests whether the same product is returned by finding by code or not.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void findByProductCode() throws ThisIsMyException {
+    void findByProductCode() throws InternalServerError {
 
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.getByID(1)).thenReturn(product);
@@ -47,24 +47,24 @@ class ProductServiceTest {
 
     /**
      * Tests whether the exception gets thrown or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void findByProductCodeException() throws ThisIsMyException {
+    void findByProductCodeException() throws InternalServerError {
 
         Product product = new Product(1, "ish", 20F, 100);
-        doThrow(ThisIsMyException.class).when(productDao).getByID(product.getProductCode());
-        assertThrows(ThisIsMyException.class, () -> productService.findByProductCode(product.getProductCode()));
+        doThrow(InternalServerError.class).when(productDao).getByID(product.getProductCode());
+        assertThrows(InternalServerError.class, () -> productService.findByProductCode(product.getProductCode()));
 
     }
 
     /**
      * Tests that the same product is not returned by fetching using product code.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void notFindByProductCode() throws ThisIsMyException {
+    void notFindByProductCode() throws InternalServerError {
 
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.getByID(1)).thenReturn(product);
@@ -74,10 +74,10 @@ class ProductServiceTest {
 
     /**
      * Tests whether the product dao save method is called 1 time.
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void insert() throws ThisIsMyException {
+    void insert() throws InternalServerError {
 
         Product product = new Product(1, "ish", 20F, 100);
         productService.insert(product);
@@ -86,35 +86,35 @@ class ProductServiceTest {
 
     /**
      * Tests whether the exception gets thrown or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void insertException() throws ThisIsMyException {
+    void insertException() throws InternalServerError {
 
         Product product = new Product(1, "ish", 20F, 100);
-        doThrow(ThisIsMyException.class).when(productDao).save(product);
-        assertThrows(ThisIsMyException.class, () -> productService.insert(product));
+        doThrow(InternalServerError.class).when(productDao).save(product);
+        assertThrows(InternalServerError.class, () -> productService.insert(product));
     }
 
     /**
      * Tests whether the product is updated using the product code or not.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void updateByProductCodeException() throws ThisIsMyException {
+    void updateByProductCodeException() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
-        doThrow(ThisIsMyException.class).when(productDao).updateByID(product.getProductCode(), product);
-        assertThrows(ThisIsMyException.class, () -> productService.updateByProductCode(product.getProductCode(), product));
+        doThrow(InternalServerError.class).when(productDao).updateByID(product.getProductCode(), product);
+        assertThrows(InternalServerError.class, () -> productService.updateByProductCode(product.getProductCode(), product));
     }
 
     /**
      * Tests that the product is not updated using the product code.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void UpdateByProductCode() throws ThisIsMyException {
+    void UpdateByProductCode() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
         productService.updateByProductCode(product.getProductCode(), product);
         verify(productDao, times(1)).updateByID(product.getProductCode(), product);
@@ -122,10 +122,10 @@ class ProductServiceTest {
 
     /**
      * Tests that the delete method is called 1 time.
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void deleteByProductCode() throws ThisIsMyException {
+    void deleteByProductCode() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
         productService.deleteByProductCode(product.getProductCode());
         verify(productDao, times(1)).deleteById(product.getProductCode());
@@ -133,22 +133,22 @@ class ProductServiceTest {
 
     /**
      * Tests whether the exception gets thrown or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void deleteByProductCodeException() throws ThisIsMyException {
+    void deleteByProductCodeException() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
-        doThrow(ThisIsMyException.class).when(productDao).deleteById(product.getProductCode());
-        assertThrows(ThisIsMyException.class, () -> productService.deleteByProductCode(product.getProductCode()));
+        doThrow(InternalServerError.class).when(productDao).deleteById(product.getProductCode());
+        assertThrows(InternalServerError.class, () -> productService.deleteByProductCode(product.getProductCode()));
     }
 
     /**
      * Tests that the same product list is returned.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void getAllProduct() throws ThisIsMyException {
+    void getAllProduct() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.findAll()).thenReturn(Arrays.asList(product));
         assertEquals(1, productService.getAllProduct().get(0).getProductCode());
@@ -156,21 +156,21 @@ class ProductServiceTest {
 
     /**
      * Tests whether the exception gets thrown or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void getAllProductException() throws ThisIsMyException {
-        doThrow(ThisIsMyException.class).when(productDao).findAll();
-        assertThrows(ThisIsMyException.class, () -> productService.getAllProduct());
+    void getAllProductException() throws InternalServerError {
+        doThrow(InternalServerError.class).when(productDao).findAll();
+        assertThrows(InternalServerError.class, () -> productService.getAllProduct());
     }
 
     /**
      * Tests that the same product list is not returned.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void notGetAllProduct() throws ThisIsMyException {
+    void notGetAllProduct() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.findAll()).thenReturn(Arrays.asList(product));
         assertNotEquals(2, productService.getAllProduct().get(0).getProductCode());
@@ -179,10 +179,10 @@ class ProductServiceTest {
     /**
      * Tests that the respective product exists.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void productIsExist() throws ThisIsMyException {
+    void productIsExist() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.exist(product.getProductCode())).thenReturn(true);
         assertEquals(true, productService.productIsExist(product.getProductCode()));
@@ -190,22 +190,22 @@ class ProductServiceTest {
 
     /**
      * Tests whether the exception gets thrown or not.
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void productIsExistException() throws ThisIsMyException {
+    void productIsExistException() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
-        doThrow(ThisIsMyException.class).when(productDao).exist(product.getProductCode());
-        assertThrows(ThisIsMyException.class, () -> productService.productIsExist(product.getProductCode()));
+        doThrow(InternalServerError.class).when(productDao).exist(product.getProductCode());
+        assertThrows(InternalServerError.class, () -> productService.productIsExist(product.getProductCode()));
     }
 
     /**
      * Tests that the respective product does not exist.
      *
-     * @throws ThisIsMyException
+     * @throws InternalServerError
      */
     @Test
-    void notProductIsExist() throws ThisIsMyException {
+    void notProductIsExist() throws InternalServerError {
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.exist(product.getProductCode())).thenReturn(true);
         assertNotEquals(false, productService.productIsExist(product.getProductCode()));
