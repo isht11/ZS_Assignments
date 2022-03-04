@@ -29,7 +29,7 @@ public class StudentController {
     }
 
 
-    public void run() throws ThisIsMyException {
+    public void run()  {
         boolean flag  = true;
 
         do{
@@ -38,10 +38,18 @@ public class StudentController {
             int choice  =  scanner.nextInt();
             switch (choice){
                 case 1:
-                    this.addStudent();
+                    try {
+                        this.addStudent();
+                    } catch (ThisIsMyException e) {
+                        logger.info(e.getMessage());
+                    }
                     break;
                 case 2:
-                    this.getStudentById();
+                    try {
+                        this.getStudentById();
+                    } catch (ThisIsMyException e) {
+                        logger.info(e.getMessage());
+                    }
                     break;
                 default:
                     logger.info("Enter character for continue or stop");
