@@ -25,10 +25,6 @@ import java.util.Properties;
  * connects to the database and has methods to insert, update, delete to the table.
  */
 public class ProductDao {
-
-    static final String URL = "jdbc:postgresql://localhost:2006/student";
-    static final String USERNAME = "postgres";
-    static final String PASSWORD = "root123";
     Logger logger = LogManager.getLogger(ProductController.class.getName());
 
     /**
