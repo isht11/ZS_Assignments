@@ -9,14 +9,12 @@ import com.zs.assignment10.exceptions.InternalServerError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * connects to the database and has methods to insert, update, delete to the table.
@@ -34,14 +32,20 @@ public class ProductDao {
      * @return
      */
     public Connection connectionToDatabase() throws InternalServerError {
-        Connection conn;
+        Connection connection;
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new InternalServerError("Class not found error or sql error");
+            FileInputStream fileInputStream = new FileInputStream("src/main/resources/dbConfig.properties");
+            Properties properties = new Properties();
+            properties.load(fileInputStream);
+            String url = properties.getProperty("url");
+            String userName = properties.getProperty("username");
+            String passWord = properties.getProperty("password");
+            connection = DriverManager.getConnection(url, userName, passWord);
+        } catch (SQLException | IOException | ClassNotFoundException e) {
+            throw new InternalServerError("Sql exception or IO exception or Class not found");
         }
-        return conn;
+        return connection;
     }
 
     public void save(Product product) throws InternalServerError {
