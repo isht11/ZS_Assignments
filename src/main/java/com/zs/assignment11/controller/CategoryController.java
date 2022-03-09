@@ -3,6 +3,7 @@
  */
 package com.zs.assignment11.controller;
 
+import com.zs.assignment11.exceptions.InternalServerError;
 import com.zs.assignment11.services.CategoryService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +34,12 @@ public class CategoryController {
      */
     @GetMapping("/ecommerce/Categories")
     public List<String> getAllCategories() {
-        List<String> categoryList = categoryService.getAll();
+        List<String> categoryList = null;
+        try {
+            categoryList = categoryService.getAll();
+        } catch (InternalServerError e) {
+            logger.error(e.getMessage());
+        }
         logger.info("fetch all category successfully .. !!");
         return categoryList;
     }

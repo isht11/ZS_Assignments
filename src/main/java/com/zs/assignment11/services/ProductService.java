@@ -7,6 +7,7 @@ import com.zs.assignment11.dao.ProductDao;
 import com.zs.assignment11.entity.Category;
 import com.zs.assignment11.entity.Product;
 import com.zs.assignment11.exceptions.InternalServerError;
+import com.zs.assignment11.exceptions.ProductNotFoundError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -35,25 +36,20 @@ public class ProductService {
      * @param product
      * @param category
      */
-    public void saveProduct(Product product, Category category) {
-        try {
-            productDao.save(product, category);
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
+    public void saveProduct(Product product, Category category) throws InternalServerError, ProductNotFoundError {
+        if(productDao.exist(product.getId())){
+            throw new ProductNotFoundError("Product already exists");
         }
+        productDao.save(product, category);
     }
 
     /**
      * Returns a list of all the products in the database.
      * @return
      */
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts() throws InternalServerError {
         List<Product> productList = null;
-        try {
-            productList = productDao.findAll();
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
+        productList = productDao.findAll();
         return productList;
     }
 
@@ -62,13 +58,9 @@ public class ProductService {
      * @param category
      * @return
      */
-    public List<String> getAllProductByCategory(String category) {
-        List<String> productList = null;
-        try {
-            productList = productDao.findAllInCategory(category);
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
+    public List<String> getAllProductByCategory(String category) throws InternalServerError {
+        List<String> productList;
+        productList = productDao.findAllInCategory(category);
         return productList;
     }
 
@@ -77,12 +69,11 @@ public class ProductService {
      * @param product
      * @param id
      */
-    public void updateProduct(Product product, int id) {
-        try {
-            productDao.updateProduct(id,product);
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
+    public void updateProduct(Product product, int id) throws ProductNotFoundError, InternalServerError {
+        if(!productDao.exist(product.getId())){
+            throw new ProductNotFoundError("The product was not found in the database");
         }
+        productDao.updateProduct(id,product);
 
     }
 }

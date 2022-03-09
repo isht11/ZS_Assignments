@@ -3,12 +3,13 @@
  */
 package com.zs.assignment11.dao;
 
-import com.zs.assignment11.controller.ProductController;
+import com.zs.assignment11.dbConnection.DBConnection;
 import com.zs.assignment11.exceptions.InternalServerError;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,28 +17,10 @@ import java.util.List;
  * connects to the database and has methods to insert, update, delete to the table.
  */
 public class CategoryDao {
-
-    static final String URL = "jdbc:postgresql://localhost:2006/student";
-    static final String USERNAME = "postgres";
-    static final String PASSWORD = "root123";
-    Logger logger = LogManager.getLogger(ProductController.class.getName());
-
-    /**
-     * Connects to the database.
-     *
-     * @return
-     */
-    public Connection connectionToDatabase() throws InternalServerError {
-        Connection conn;
-        try {
-            Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new InternalServerError("Class not found error or sql error");
-        }
-        return conn;
+    DBConnection dbConnection;
+    public CategoryDao(){
+        dbConnection = new DBConnection();
     }
-
     /**
      * Gets all the categories present in the table.
      * @return
@@ -49,7 +32,7 @@ public class CategoryDao {
         final String QUERY = "select DISTINCT category_name from Category";
         Statement statement;
         try {
-            Connection con = this.connectionToDatabase();
+            Connection con = dbConnection.connectionToDatabase();
             statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(QUERY);
             while (resultSet.next()) {

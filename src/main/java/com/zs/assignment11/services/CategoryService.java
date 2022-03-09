@@ -32,13 +32,9 @@ public class CategoryService {
      * Returns a list of all the categories.
      * @return
      */
-    public List<String> getAll() {
+    public List<String> getAll() throws InternalServerError {
         List<String> listCategories  = null;
-        try {
-            listCategories = categoryDao.getAll();
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
+        listCategories = categoryDao.getAll();
         return listCategories;
     }
 }

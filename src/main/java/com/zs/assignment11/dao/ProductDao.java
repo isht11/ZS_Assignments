@@ -3,16 +3,16 @@
  */
 package com.zs.assignment11.dao;
 
+import com.zs.assignment11.dbConnection.DBConnection;
 import com.zs.assignment11.entity.Category;
 import com.zs.assignment11.entity.Product;
 import com.zs.assignment11.exceptions.InternalServerError;
 
-import java.sql.Statement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,27 +20,10 @@ import java.util.List;
  * connects to the database and has methods to insert, update, delete to the table.
  */
 public class ProductDao {
-
-    static final String URL = "jdbc:postgresql://localhost:2006/student";
-    static final String USERNAME = "postgres";
-    static final String PASSWORD = "root123";
-
-    /**
-     * Connects to the database.
-     *
-     * @return
-     */
-    public Connection connectionToDatabase() throws InternalServerError {
-        Connection conn;
-        try {
-            Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new InternalServerError("Class not found error or sql error");
-        }
-        return conn;
+    DBConnection dbConnection;
+    public ProductDao(){
+        dbConnection = new DBConnection();
     }
-
     /**
      * Saves the product to the table.
      * @param product
@@ -49,10 +32,10 @@ public class ProductDao {
      */
     public void save(Product product, Category category) throws InternalServerError {
 
-        Connection con = this.connectionToDatabase();
+        Connection con = dbConnection.connectionToDatabase();
         Statement statement;
-        final String QUERY1= "INSERT INTO Product VALUES(" + product.getId() + ", '" + product.getProductName() + "'," + product.getPrice() + ");";
-        final String QUERY2 = "INSERT INTO Category VALUES(" + category.getCategoryId() + ", '" + category.getCategoryName() + "'," + product.getId() + ");";
+        String QUERY1= "INSERT INTO Product VALUES(" + product.getId() + ", '" + product.getProductName() + "'," + product.getPrice() + ");";
+        String QUERY2 = "INSERT INTO Category VALUES(" + category.getCategoryId() + ", '" + category.getCategoryName() + "'," + product.getId() + ");";
         try {
             statement = con.createStatement();
             statement.executeUpdate(QUERY1);
@@ -71,9 +54,9 @@ public class ProductDao {
      * @throws InternalServerError
      */
     public void updateProduct(Integer productId, Product product) throws InternalServerError {
-        final String QUERY= "update product set product_name = ?, price = ? where product_id=?";
+        String QUERY= "update product set product_name = ?, price = ? where product_id=?";
         try {
-            Connection con = this.connectionToDatabase();
+            Connection con = dbConnection.connectionToDatabase();
             PreparedStatement preparedStatement = con.prepareStatement(QUERY);
             preparedStatement.setString(1, product.getProductName());
             preparedStatement.setFloat(2, product.getPrice());
@@ -93,10 +76,10 @@ public class ProductDao {
      */
     public List<Product> findAll() throws InternalServerError {
         ArrayList<Product> productList = new ArrayList<>();
-        final String QUERY = "select * from product";
+        String QUERY = "select * from product";
         Statement statement;
         try {
-            Connection con = this.connectionToDatabase();
+            Connection con = dbConnection.connectionToDatabase();
             statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(QUERY);
             while (resultSet.next()) {
@@ -122,10 +105,10 @@ public class ProductDao {
      */
     public List<String> findAllInCategory(String parent) throws InternalServerError {
         ArrayList<String> productList = new ArrayList<>();
-        final String QUERY = "select product.product_name from product INNER JOIN category ON category.product_id = product.product_id where category_name = ?";
+        String QUERY = "select product.product_name from product INNER JOIN category ON category.product_id = product.product_id where category_name = ?";
         PreparedStatement preparedStatement;
         try {
-            Connection con = this.connectionToDatabase();
+            Connection con = dbConnection.connectionToDatabase();
             preparedStatement= con.prepareStatement(QUERY);
             preparedStatement.setString(1,parent);
             ResultSet resultSet=preparedStatement.executeQuery();
@@ -138,6 +121,25 @@ public class ProductDao {
         }
         return productList;
 
+    }
+    public boolean exist(int productCode) throws InternalServerError {
+        ResultSet resultSet;
+        String existQuery = "SELECT COUNT(*) FROM product WHERE product_id = ?";
+        try {
+            Connection con = dbConnection.connectionToDatabase();
+            PreparedStatement preparedStatement = con.prepareStatement(existQuery);
+            preparedStatement.setInt(1, productCode);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                if (resultSet.getInt(1) > 0) {
+                    return true;
+                }
+            }
+            con.close();
+        } catch (SQLException e) {
+            throw new InternalServerError("Sql error occurred");
+        }
+        return false;
     }
 
 
