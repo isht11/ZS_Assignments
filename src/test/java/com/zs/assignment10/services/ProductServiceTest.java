@@ -6,6 +6,7 @@ package com.zs.assignment10.services;
 import com.zs.assignment10.dao.ProductDao;
 import com.zs.assignment10.entity.Product;
 import com.zs.assignment10.exceptions.InternalServerError;
+import com.zs.assignment10.exceptions.ProductNotFoundError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,7 +78,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void insert() throws InternalServerError {
+    void insert() throws InternalServerError, ProductNotFoundError {
 
         Product product = new Product(1, "ish", 20F, 100);
         productService.insert(product);
@@ -114,7 +115,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void UpdateByProductCode() throws InternalServerError {
+    void UpdateByProductCode() throws InternalServerError, ProductNotFoundError {
         Product product = new Product(1, "ish", 20F, 100);
         productService.updateByProductCode(product.getProductCode(), product);
         verify(productDao, times(1)).updateByID(product.getProductCode(), product);

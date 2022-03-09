@@ -5,6 +5,7 @@ package com.zs.assignment10.controller;
 
 import com.zs.assignment10.entity.Product;
 import com.zs.assignment10.exceptions.InternalServerError;
+import com.zs.assignment10.exceptions.ProductNotFoundError;
 import com.zs.assignment10.services.ProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,7 @@ public class ProductController {
         productService = new ProductService();
     }
 
-    public void run() {
+    public void run() throws InternalServerError, ProductNotFoundError {
         logger.info("Perform the operations on the product");
         Scanner scanner = new Scanner(System.in);
         boolean flag;
@@ -74,32 +75,18 @@ public class ProductController {
     /**
      * Checks if the product exists or not.
      */
-    private void exists()  {
+    private void exists() throws InternalServerError {
         logger.info("enter product code for exist in database ");
         int productCode = scanner.nextInt();
-        boolean checkExist=false;
-        try {
-            checkExist = productService.productIsExist(productCode);
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
-        if (checkExist) {
-            logger.info("Product Exist");
-        } else {
-            logger.info("Product Not Exist");
-        }
+        productService.productIsExist(productCode);
     }
 
     /**
      * Returns a list of all the products in the database.
      */
-    private void findAllProduct()  {
-        List<Product> productList = null;
-        try {
-            productList = productService.getAllProduct();
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
+    private void findAllProduct() throws InternalServerError {
+        List<Product> productList;
+        productList = productService.getAllProduct();
         for (Product product : productList) {
             this.DisplayProduct(product);
         }
@@ -110,33 +97,19 @@ public class ProductController {
      *
      * @throws Exception
      */
-    private void deleteByID()  {
+    private void deleteByID() throws InternalServerError {
         logger.info("Enter Product code for Delete");
         Integer productCode = scanner.nextInt();
-        try {
-            productService.deleteByProductCode(productCode);
-        } catch (InternalServerError e) {
-           logger.error(e.getMessage());
-        }
+        productService.deleteByProductCode(productCode);
     }
 
     /**
      * Finds the product using product code.
      */
-    public void findById() {
+    public void findById() throws InternalServerError {
         logger.info("Enter product code");
         Integer productCode = scanner.nextInt();
-        Product product;
-        try {
-            product = productService.findByProductCode(productCode);
-            logger.info("You want to Display Y/N");
-            char c = scanner.next().charAt(0);
-            if (c == 'Y') {
-                DisplayProduct(product);
-            }
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
+        productService.findByProductCode(productCode);
     }
 
     /**
@@ -151,20 +124,10 @@ public class ProductController {
      *
      * @throws Exception
      */
-    private void updateProduct() {
+    private void updateProduct() throws InternalServerError, ProductNotFoundError {
 
         logger.info("enter product id");
         int productCode = scanner.nextInt();
-        boolean checkExist = false;
-        try {
-            checkExist = productService.productIsExist(productCode);
-        } catch (InternalServerError e) {
-            logger.info("There was an error");
-        }
-        if (!checkExist) {
-            logger.info("product does not exist");
-            return;
-        }
         Product product = new Product();
         product.setProductCode(productCode);
         logger.info("Update product name");
@@ -176,11 +139,7 @@ public class ProductController {
         logger.info("enter product quantity");
         int quantity = scanner.nextInt();
         product.setQuantity(quantity);
-        try {
-            productService.updateByProductCode(product.getProductCode(), product);
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
+        productService.updateByProductCode(product.getProductCode(), product);
     }
 
     /**
@@ -188,7 +147,7 @@ public class ProductController {
      *
      * @throws Exception
      */
-    private void addProduct() {
+    private void addProduct() throws InternalServerError, ProductNotFoundError {
         logger.info("enter product code");
         int productCode = scanner.nextInt();
         logger.info("enter product name");
@@ -198,11 +157,7 @@ public class ProductController {
         logger.info("enter product quantity");
         int quantity = scanner.nextInt();
         Product product = new Product(productCode, productName, price, quantity);
-        try {
-            productService.insert(product);
-        } catch (InternalServerError e) {
-            logger.error(e.getMessage());
-        }
+        productService.insert(product);
 
     }
 }

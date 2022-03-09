@@ -4,59 +4,53 @@
 package com.zs.assignment10.dao;
 
 import com.zs.assignment10.controller.ProductController;
+import com.zs.assignment10.dbConnection.DBConnection;
 import com.zs.assignment10.entity.Product;
 import com.zs.assignment10.exceptions.InternalServerError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * connects to the database and has methods to insert, update, delete to the table.
  */
 public class ProductDao {
     Logger logger = LogManager.getLogger(ProductController.class.getName());
+    DBConnection dbConnection;
+    final String insertQuery = "INSERT INTO product VALUES(?,?,?,?);";
+    final String getByIdQuery = "select * from product where productCode = ?";
+    final String updateQuery = "update product set productName=?, price=?, quantity=? where productCode=?";
+    final String deleteQuery= "DELETE FROM product where productCode =?";
+    final String findQuery = "select * from product";
+    final String existQuery = "SELECT COUNT(*) FROM product WHERE productCode = ?";
 
-    /**
-     * Connects to the database.
-     *
-     * @return
-     */
-    public Connection connectionToDatabase() throws InternalServerError {
-        Connection connection;
-        try {
-            Class.forName("org.postgresql.Driver");
-            FileInputStream fileInputStream = new FileInputStream("src/main/resources/dbConfig.properties");
-            Properties properties = new Properties();
-            properties.load(fileInputStream);
-            String url = properties.getProperty("url");
-            String userName = properties.getProperty("username");
-            String passWord = properties.getProperty("password");
-            connection = DriverManager.getConnection(url, userName, passWord);
-        } catch (SQLException | IOException | ClassNotFoundException e) {
-            throw new InternalServerError("Sql exception or IO exception or Class not found");
-        }
-        return connection;
+    public ProductDao() {
+        dbConnection = new DBConnection();
     }
 
+    /**
+     * Inserts product in the database.
+     * @param product
+     * @throws InternalServerError
+     */
     public void save(Product product) throws InternalServerError {
 
-        Connection con = this.connectionToDatabase();
-        Statement statement;
-        final String query = "INSERT INTO product VALUES(" + product.getProductCode() + ", '" + product.getProductName() + "'," + product.getPrice() + ", " + product.getQuantity() + ");";
+        Connection con = dbConnection.connectionToDatabase();
+        PreparedStatement statement;
         try {
-            statement = con.createStatement();
-            statement.executeUpdate(query);
+            statement = con.prepareStatement(insertQuery);
+            statement.setInt(1, product.getProductCode());
+            statement.setString(2, product.getProductName());
+            statement.setFloat(3, product.getPrice());
+            statement.setInt(4, product.getQuantity());
+            statement.executeUpdate(insertQuery);
             con.close();
         } catch (SQLException e) {
             throw new InternalServerError("SQL exception occurred");
@@ -64,13 +58,18 @@ public class ProductDao {
 
     }
 
+    /**
+     * Gets all product details using product id.
+     * @param productCode
+     * @return
+     * @throws InternalServerError
+     */
     public Product getByID(Integer productCode) throws InternalServerError {
 
-        final String query = "select * from product where productCode = ?";
         Product product = new Product();
         try {
-            Connection con = this.connectionToDatabase();
-            PreparedStatement preparedStatement = con.prepareStatement(query);
+            Connection con = dbConnection.connectionToDatabase();
+            PreparedStatement preparedStatement = con.prepareStatement(getByIdQuery);
             preparedStatement.setInt(1, productCode);
             ResultSet resultSet = preparedStatement.executeQuery();
             con.close();
@@ -89,11 +88,16 @@ public class ProductDao {
         return product;
     }
 
+    /**
+     * Updates the product given the product id.
+     * @param productCode
+     * @param product
+     * @throws InternalServerError
+     */
     public void updateByID(Integer productCode, Product product) throws InternalServerError {
-        final String QUERY = "update product set productName=?, price=?, quantity=? where productCode=?";
         try {
-            Connection con = this.connectionToDatabase();
-            PreparedStatement preparedStatement = con.prepareStatement(QUERY);
+            Connection con = dbConnection.connectionToDatabase();
+            PreparedStatement preparedStatement = con.prepareStatement(updateQuery);
             preparedStatement.setString(1, product.getProductName());
             preparedStatement.setInt(3, product.getQuantity());
             preparedStatement.setInt(4, productCode);
@@ -105,27 +109,36 @@ public class ProductDao {
 
     }
 
+    /**
+     * deletes the product given the product id.
+     * @param productCode
+     * @throws InternalServerError
+     */
     public void deleteById(Integer productCode) throws InternalServerError {
-        final String QUERY = "DELETE FROM product where productCode =" + productCode;
-        Statement statement;
+        PreparedStatement statement;
         try {
-            Connection con = this.connectionToDatabase();
-            statement = con.createStatement();
-            statement.executeUpdate(QUERY);
+            Connection con = dbConnection.connectionToDatabase();
+            statement = con.prepareStatement(deleteQuery);
+            statement.setInt(1, productCode);
+            statement.executeUpdate(deleteQuery);
             con.close();
         } catch (SQLException e) {
             throw new InternalServerError("There is a SQL error");
         }
     }
 
+    /**
+     * returns all the products in the database.
+     * @return
+     * @throws InternalServerError
+     */
     public List<Product> findAll() throws InternalServerError {
         ArrayList<Product> productList = new ArrayList<>();
-        final String QUERY = "select * from product";
         Statement statement;
         try {
-            Connection con = this.connectionToDatabase();
+            Connection con = dbConnection.connectionToDatabase();
             statement = con.createStatement();
-            ResultSet resultSet = statement.executeQuery(QUERY);
+            ResultSet resultSet = statement.executeQuery(findQuery);
             while (resultSet.next()) {
                 Product product = new Product();
                 product.setProductCode(resultSet.getInt(1));
@@ -142,12 +155,17 @@ public class ProductDao {
 
     }
 
+    /**
+     * Checks if the product exists or not.
+     * @param productCode
+     * @return
+     * @throws InternalServerError
+     */
     public boolean exist(int productCode) throws InternalServerError {
         ResultSet resultSet;
-        final String QUERY = "SELECT COUNT(*) FROM product WHERE productCode = ?";
         try {
-            Connection con = this.connectionToDatabase();
-            PreparedStatement preparedStatement = con.prepareStatement(QUERY);
+            Connection con = dbConnection.connectionToDatabase();
+            PreparedStatement preparedStatement = con.prepareStatement(existQuery);
             preparedStatement.setInt(1, productCode);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

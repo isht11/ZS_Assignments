@@ -6,6 +6,7 @@ package com.zs.assignment10.services;
 import com.zs.assignment10.dao.ProductDao;
 import com.zs.assignment10.entity.Product;
 import com.zs.assignment10.exceptions.InternalServerError;
+import com.zs.assignment10.exceptions.ProductNotFoundError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,8 +32,11 @@ public class ProductService {
      * @param product
      * @throws InternalServerError
      */
-    public void insert(Product product) throws InternalServerError {
-            productDao.save(product);
+    public void insert(Product product) throws InternalServerError, ProductNotFoundError {
+        if(!productDao.exist(product.getProductCode())){
+            throw new ProductNotFoundError("The product was not found in the database");
+        }
+        productDao.save(product);
     }
 
     /**
@@ -54,8 +58,11 @@ public class ProductService {
      * @return
      * @throws InternalServerError
      */
-    public void updateByProductCode(Integer productCode, Product product) throws InternalServerError {
-            productDao.updateByID(productCode, product);
+    public void updateByProductCode(Integer productCode, Product product) throws InternalServerError, ProductNotFoundError {
+        if(!productDao.exist(product.getProductCode())){
+            throw new ProductNotFoundError("The product was not found in the database");
+        }
+        productDao.updateByID(productCode, product);
     }
 
     /**
