@@ -24,53 +24,57 @@ public class ProductController {
     private final Scanner scanner;
     Logger logger = LogManager.getLogger(ProductController.class.getName());
 
-    public ProductController() {
+    public ProductController() throws InternalServerError {
         scanner = new Scanner(System.in);
         productService = new ProductService();
     }
 
-    public void run() throws InternalServerError, ProductNotFoundError, NotValidException {
+    public void run()  {
         logger.info("Perform the operations on the product");
         Scanner scanner = new Scanner(System.in);
         boolean flag;
         int choice;
-        do {
-            logger.info("enter your choice to perform the operation on product\n 1. Add Product \n 2. Update Product \n 3. Delete Product \n4. Display Product\n5. Display all Products\n 6. If product exists\n");
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1:
-                    this.addProduct();
-                    break;
-                case 2:
-                    this.updateProduct();
-                    break;
-                case 3:
-                    this.deleteByID();
-                    break;
-                case 4:
-                    this.findById();
-                    break;
-                case 5:
-                    this.findAllProduct();
-                    break;
-                case 6:
-                    this.exists();
-                    break;
-                default:
-                    break;
-            }
-            logger.info("Do you want Continue : ");
-            logger.info("1. Yes");
-            logger.info("2. No");
-            logger.info("Please enter choice");
-            int input = scanner.nextInt();
-            if (input == 1) {
-                flag = true;
-            } else {
-                logger.info("-----Program Ended-----");
-                flag = false;
-            }
-        } while (flag);
+        try {
+            do {
+                logger.info("enter your choice to perform the operation on product\n 1. Add Product \n 2. Update Product \n 3. Delete Product \n4. Display Product\n5. Display all Products\n 6. If product exists\n");
+                choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        this.addProduct();
+                        break;
+                    case 2:
+                        this.updateProduct();
+                        break;
+                    case 3:
+                        this.deleteByID();
+                        break;
+                    case 4:
+                        this.findById();
+                        break;
+                    case 5:
+                        this.findAllProduct();
+                        break;
+                    case 6:
+                        this.exists();
+                        break;
+                    default:
+                        break;
+                }
+                logger.info("Do you want Continue : ");
+                logger.info("1. Yes");
+                logger.info("2. No");
+                logger.info("Please enter choice");
+                int input = scanner.nextInt();
+                if (input == 1) {
+                    flag = true;
+                } else {
+                    logger.info("-----Program Ended-----");
+                    flag = false;
+                }
+            } while (flag);
+        } catch (NotValidException | ProductNotFoundError | InternalServerError e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**

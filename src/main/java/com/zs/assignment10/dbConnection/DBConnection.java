@@ -10,18 +10,28 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DBConnection {
-    public Connection connectionToDatabase() throws InternalServerError {
-        Connection connection;
+    Properties properties;
+    String url;
+    String userName;
+    String passWord;
+    public DBConnection() throws InternalServerError {
         try {
             Class.forName("org.postgresql.Driver");
             FileInputStream fileInputStream = new FileInputStream("src/main/resources/dbConfig.properties");
-            Properties properties = new Properties();
+            properties = new Properties();
             properties.load(fileInputStream);
-            String url = properties.getProperty("url");
-            String userName = properties.getProperty("username");
-            String passWord = properties.getProperty("password");
+            url = properties.getProperty("url");
+            userName = properties.getProperty("username");
+            passWord = properties.getProperty("password");
+        } catch (ClassNotFoundException | IOException e) {
+            throw new InternalServerError("Class not Found or IOException");
+        }
+    }
+    public Connection connectionToDatabase() throws InternalServerError {
+        Connection connection;
+        try {
             connection = DriverManager.getConnection(url, userName, passWord);
-        } catch (SQLException | IOException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             throw new InternalServerError("Sql exception or IO exception or Class not found");
         }
         return connection;

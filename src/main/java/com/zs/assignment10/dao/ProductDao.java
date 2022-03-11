@@ -10,11 +10,7 @@ import com.zs.assignment10.exceptions.InternalServerError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +27,7 @@ public class ProductDao {
     final String findQuery = "select * from product";
     final String existQuery = "SELECT COUNT(*) FROM product WHERE productCode = ?";
 
-    public ProductDao() {
+    public ProductDao() throws InternalServerError {
         dbConnection = new DBConnection();
     }
 

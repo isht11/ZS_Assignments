@@ -5,8 +5,6 @@ package com.zs.assignment10;
 
 import com.zs.assignment10.controller.ProductController;
 import com.zs.assignment10.exceptions.InternalServerError;
-import com.zs.assignment10.exceptions.NotValidException;
-import com.zs.assignment10.exceptions.ProductNotFoundError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,12 +13,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class ProductMain {
     static Logger logger = LogManager.getLogger(ProductController.class.getName());
-    public static void main(String[] args)  {
 
-        ProductController controller = new ProductController();
+    public static void main(String[] args) {
+
         try {
+            ProductController controller = new ProductController();
             controller.run();
-        } catch (InternalServerError | ProductNotFoundError | NotValidException e) {
+        } catch (InternalServerError e) {
             logger.error(e.getMessage());
         }
     }

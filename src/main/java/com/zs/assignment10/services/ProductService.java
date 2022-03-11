@@ -20,7 +20,7 @@ public class ProductService {
     private ProductDao productDao;
     static Logger logger = LogManager.getLogger(ProductService.class.getName());
 
-    public ProductService() {
+    public ProductService() throws InternalServerError {
         productDao = new ProductDao();
     }
 
