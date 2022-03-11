@@ -33,7 +33,7 @@ public class CategoryService {
      * @return
      */
     public List<String> getAll() throws InternalServerError {
-        List<String> listCategories  = null;
+        List<String> listCategories;
         listCategories = categoryDao.getAll();
         return listCategories;
     }

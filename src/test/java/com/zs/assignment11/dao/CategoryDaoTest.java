@@ -1,5 +1,6 @@
 package com.zs.assignment11.dao;
 
+import com.zs.assignment11.dbConnection.DBConnection;
 import com.zs.assignment11.exceptions.InternalServerError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,12 +18,16 @@ import static org.mockito.Mockito.*;
 
 class CategoryDaoTest {
     CategoryDao categoryDao;
+    DBConnection dBConnection;
+
     @Mock
     private Connection mockConnection;
 
     @BeforeEach
     void setup() {
-        categoryDao = new CategoryDao();
+        dBConnection = mock(DBConnection.class);
+        categoryDao = new CategoryDao(dBConnection);
+
     }
 
     @Test

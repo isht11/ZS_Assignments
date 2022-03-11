@@ -7,6 +7,7 @@ import com.zs.assignment11.dao.ProductDao;
 import com.zs.assignment11.entity.Category;
 import com.zs.assignment11.entity.Product;
 import com.zs.assignment11.exceptions.InternalServerError;
+import com.zs.assignment11.exceptions.NotValidException;
 import com.zs.assignment11.exceptions.ProductNotFoundError;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,9 +37,12 @@ public class ProductService {
      * @param product
      * @param category
      */
-    public void saveProduct(Product product, Category category) throws InternalServerError, ProductNotFoundError {
+    public void saveProduct(Product product, Category category) throws InternalServerError, ProductNotFoundError, NotValidException {
         if(productDao.exist(product.getId())){
             throw new ProductNotFoundError("Product already exists");
+        }
+        if (product.getId() < 0 || product.getProductName().isBlank() || product.getProductName() == null) {
+            throw new NotValidException("The format is not valid");
         }
         productDao.save(product, category);
     }
@@ -48,7 +52,7 @@ public class ProductService {
      * @return
      */
     public List<Product> getAllProducts() throws InternalServerError {
-        List<Product> productList = null;
+        List<Product> productList;
         productList = productDao.findAll();
         return productList;
     }
@@ -58,9 +62,12 @@ public class ProductService {
      * @param category
      * @return
      */
-    public List<String> getAllProductByCategory(String category) throws InternalServerError {
+    public List<String> getAllProductByCategory(String category) throws InternalServerError, NotValidException {
         List<String> productList;
         productList = productDao.findAllInCategory(category);
+        if (category.isBlank()) {
+            throw new NotValidException("The format is not valid");
+        }
         return productList;
     }
 
@@ -69,9 +76,12 @@ public class ProductService {
      * @param product
      * @param id
      */
-    public void updateProduct(Product product, int id) throws ProductNotFoundError, InternalServerError {
+    public void updateProduct(Product product, int id) throws ProductNotFoundError, InternalServerError, NotValidException {
         if(!productDao.exist(product.getId())){
             throw new ProductNotFoundError("The product was not found in the database");
+        }
+        if (product.getId() < 0 || product.getProductName().isBlank() || product.getProductName() == null) {
+            throw new NotValidException("The format is not valid");
         }
         productDao.updateProduct(id,product);
 

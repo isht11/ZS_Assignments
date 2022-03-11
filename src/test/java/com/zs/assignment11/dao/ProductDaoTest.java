@@ -23,7 +23,7 @@ class ProductDaoTest {
     @BeforeEach
     public void setUp() {
         dBConnection = mock(DBConnection.class);
-        productDao = new ProductDao();
+        productDao = new ProductDao(dBConnection);
     }
 
     @Test

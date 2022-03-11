@@ -24,6 +24,10 @@ public class ProductDao {
     public ProductDao(){
         dbConnection = new DBConnection();
     }
+
+    public ProductDao(DBConnection dbConnection){
+        this.dbConnection = dbConnection;
+    }
     /**
      * Saves the product to the table.
      * @param product

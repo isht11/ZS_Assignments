@@ -21,6 +21,9 @@ public class CategoryDao {
     public CategoryDao(){
         dbConnection = new DBConnection();
     }
+    public CategoryDao(DBConnection dbConnection){
+        this.dbConnection = dbConnection;
+    }
     /**
      * Gets all the categories present in the table.
      * @return

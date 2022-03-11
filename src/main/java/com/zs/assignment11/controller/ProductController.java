@@ -6,6 +6,7 @@ package com.zs.assignment11.controller;
 import com.zs.assignment11.entity.Category;
 import com.zs.assignment11.entity.Product;
 import com.zs.assignment11.exceptions.InternalServerError;
+import com.zs.assignment11.exceptions.NotValidException;
 import com.zs.assignment11.exceptions.ProductNotFoundError;
 import com.zs.assignment11.services.ProductService;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +51,7 @@ public class ProductController {
         Category category = new Category(categoryId, categoryName, productId);
         try {
             productService.saveProduct(product, category);
-        } catch (InternalServerError | ProductNotFoundError e) {
+        } catch (InternalServerError | ProductNotFoundError | NotValidException e) {
             logger.error(e.getMessage());
         }
         logger.info("product saved successfully..!!");
@@ -85,7 +86,7 @@ public class ProductController {
         List<String> result = null;
         try {
             result = productService.getAllProductByCategory(categoryName);
-        } catch (InternalServerError e) {
+        } catch (InternalServerError | NotValidException e) {
             logger.error(e.getMessage());
         }
         logger.info("fetch all product by category");
@@ -104,7 +105,7 @@ public class ProductController {
         Product product = new Product(productId, productName, price);
         try {
             this.productService.updateProduct(product, product.getId());
-        } catch (ProductNotFoundError | InternalServerError e) {
+        } catch (ProductNotFoundError | InternalServerError | NotValidException e) {
             logger.error(e.getMessage());
         }
         logger.info("product updated successfully ..!!");
