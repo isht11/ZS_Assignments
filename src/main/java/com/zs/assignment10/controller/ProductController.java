@@ -93,7 +93,7 @@ public class ProductController {
         List<Product> productList;
         productList = productService.getAllProduct();
         for (Product product : productList) {
-            this.DisplayProduct(product);
+            this.displayProduct(product);
         }
     }
 
@@ -114,13 +114,13 @@ public class ProductController {
     public void findById() throws InternalServerError, NotValidException {
         logger.info("Enter product code");
         Integer productCode = scanner.nextInt();
-        productService.findByProductCode(productCode);
+        this.displayProduct(productService.findByProductCode(productCode));
     }
 
     /**
      * @param product display the product
      */
-    private void DisplayProduct(Product product) {
+    private void displayProduct(Product product) {
         logger.info(product.display());
     }
 
