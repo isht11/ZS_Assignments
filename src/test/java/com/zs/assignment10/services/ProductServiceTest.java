@@ -6,6 +6,7 @@ package com.zs.assignment10.services;
 import com.zs.assignment10.dao.ProductDao;
 import com.zs.assignment10.entity.Product;
 import com.zs.assignment10.exceptions.InternalServerError;
+import com.zs.assignment10.exceptions.NotValidException;
 import com.zs.assignment10.exceptions.ProductNotFoundError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void findByProductCode() throws InternalServerError {
+    void findByProductCode() throws InternalServerError, NotValidException {
 
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.getByID(1)).thenReturn(product);
@@ -65,7 +66,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void notFindByProductCode() throws InternalServerError {
+    void notFindByProductCode() throws InternalServerError, NotValidException {
 
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.getByID(1)).thenReturn(product);
@@ -78,7 +79,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void insert() throws InternalServerError, ProductNotFoundError {
+    void insert() throws InternalServerError, ProductNotFoundError, NotValidException {
 
         Product product = new Product(1, "ish", 20F, 100);
         productService.insert(product);
@@ -115,7 +116,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void UpdateByProductCode() throws InternalServerError, ProductNotFoundError {
+    void UpdateByProductCode() throws InternalServerError, ProductNotFoundError, NotValidException {
         Product product = new Product(1, "ish", 20F, 100);
         productService.updateByProductCode(product.getProductCode(), product);
         verify(productDao, times(1)).updateByID(product.getProductCode(), product);
@@ -126,7 +127,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void deleteByProductCode() throws InternalServerError {
+    void deleteByProductCode() throws InternalServerError, NotValidException {
         Product product = new Product(1, "ish", 20F, 100);
         productService.deleteByProductCode(product.getProductCode());
         verify(productDao, times(1)).deleteById(product.getProductCode());
@@ -183,7 +184,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void productIsExist() throws InternalServerError {
+    void productIsExist() throws InternalServerError, NotValidException {
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.exist(product.getProductCode())).thenReturn(true);
         assertEquals(true, productService.productIsExist(product.getProductCode()));
@@ -206,7 +207,7 @@ class ProductServiceTest {
      * @throws InternalServerError
      */
     @Test
-    void notProductIsExist() throws InternalServerError {
+    void notProductIsExist() throws InternalServerError, NotValidException {
         Product product = new Product(1, "ish", 20F, 100);
         when(productDao.exist(product.getProductCode())).thenReturn(true);
         assertNotEquals(false, productService.productIsExist(product.getProductCode()));

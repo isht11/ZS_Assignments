@@ -4,18 +4,17 @@
 package com.zs.assignment10.dao;
 
 import com.zs.assignment10.dbConnection.DBConnection;
+import com.zs.assignment10.entity.Product;
 import com.zs.assignment10.exceptions.InternalServerError;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -24,11 +23,18 @@ import static org.mockito.Mockito.*;
 class ProductDaoTest {
     ProductDao productDao;
     DBConnection dBConnection;
+    MockedStatic<DriverManager> mockedDriver;
 
     @BeforeEach
     public void setUp() {
         dBConnection = mock(DBConnection.class);
-        productDao = new ProductDao();
+        productDao = new ProductDao(dBConnection);
+        try {
+            mockedDriver = Mockito.mockStatic(DriverManager.class);
+        }
+        catch (Exception ignored){
+        }
+        Mockito.reset();
     }
 
     /**
@@ -38,12 +44,17 @@ class ProductDaoTest {
      */
     @Test
     void save() throws SQLException, InternalServerError {
-        Statement statement=mock(Statement.class);
+        PreparedStatement statement=mock(PreparedStatement.class);
         Connection mockConnection=mock(Connection.class);
+        Product product=new Product(1,"bat",1F,2);
+        productDao.save(product);
         when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
-        when(mockConnection.createStatement()).thenReturn(statement);
-        when(statement.executeUpdate(anyString())).thenReturn(1);
-        assertEquals(1, statement.executeUpdate(anyString()));
+        when(mockConnection.prepareStatement(anyString())).thenReturn(statement);
+        doNothing().when(statement).setInt(anyInt(),anyInt());
+        doNothing().when(statement).setString(anyInt(),anyString());
+        doNothing().when(statement).setFloat(anyInt(),anyFloat());
+        doNothing().when(statement).setInt(anyInt(),anyInt());
+        verify(statement,times(1)).executeUpdate(anyString());
     }
 
     /**
@@ -144,9 +155,9 @@ class ProductDaoTest {
         doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
         doThrow(SQLException.class).when(conn).createStatement();
         doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
+        assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
+        assertThrows(SQLException.class ,()->conn.createStatement());
 
     }
 
@@ -162,9 +173,9 @@ class ProductDaoTest {
         doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
         doThrow(SQLException.class).when(conn).createStatement();
         doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
+        assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
+        assertThrows(SQLException.class ,()->conn.createStatement());
 
     }
 
@@ -180,9 +191,9 @@ class ProductDaoTest {
         doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
         doThrow(SQLException.class).when(conn).createStatement();
         doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
+        assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
+        assertThrows(SQLException.class ,()->conn.createStatement());
 
     }
 
@@ -198,9 +209,9 @@ class ProductDaoTest {
         doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
         doThrow(SQLException.class).when(conn).createStatement();
         doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
+        assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
+        assertThrows(SQLException.class ,()->conn.createStatement());
 
     }
 
@@ -216,9 +227,9 @@ class ProductDaoTest {
         doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
         doThrow(SQLException.class).when(conn).createStatement();
         doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
+        assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
+        assertThrows(SQLException.class ,()->conn.createStatement());
 
     }
 
@@ -234,9 +245,9 @@ class ProductDaoTest {
         doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
         doThrow(SQLException.class).when(conn).createStatement();
         doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
+        assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
+        assertThrows(SQLException.class ,()->conn.createStatement());
 
     }
 

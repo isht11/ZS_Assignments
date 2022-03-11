@@ -5,6 +5,7 @@ package com.zs.assignment10.controller;
 
 import com.zs.assignment10.entity.Product;
 import com.zs.assignment10.exceptions.InternalServerError;
+import com.zs.assignment10.exceptions.NotValidException;
 import com.zs.assignment10.exceptions.ProductNotFoundError;
 import com.zs.assignment10.services.ProductService;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ public class ProductController {
         productService = new ProductService();
     }
 
-    public void run() throws InternalServerError, ProductNotFoundError {
+    public void run() throws InternalServerError, ProductNotFoundError, NotValidException {
         logger.info("Perform the operations on the product");
         Scanner scanner = new Scanner(System.in);
         boolean flag;
@@ -75,7 +76,7 @@ public class ProductController {
     /**
      * Checks if the product exists or not.
      */
-    private void exists() throws InternalServerError {
+    private void exists() throws InternalServerError, NotValidException {
         logger.info("enter product code for exist in database ");
         int productCode = scanner.nextInt();
         productService.productIsExist(productCode);
@@ -97,7 +98,7 @@ public class ProductController {
      *
      * @throws Exception
      */
-    private void deleteByID() throws InternalServerError {
+    private void deleteByID() throws InternalServerError, NotValidException {
         logger.info("Enter Product code for Delete");
         Integer productCode = scanner.nextInt();
         productService.deleteByProductCode(productCode);
@@ -106,7 +107,7 @@ public class ProductController {
     /**
      * Finds the product using product code.
      */
-    public void findById() throws InternalServerError {
+    public void findById() throws InternalServerError, NotValidException {
         logger.info("Enter product code");
         Integer productCode = scanner.nextInt();
         productService.findByProductCode(productCode);
@@ -124,7 +125,7 @@ public class ProductController {
      *
      * @throws Exception
      */
-    private void updateProduct() throws InternalServerError, ProductNotFoundError {
+    private void updateProduct() throws InternalServerError, ProductNotFoundError, NotValidException {
 
         logger.info("enter product id");
         int productCode = scanner.nextInt();
@@ -147,7 +148,7 @@ public class ProductController {
      *
      * @throws Exception
      */
-    private void addProduct() throws InternalServerError, ProductNotFoundError {
+    private void addProduct() throws InternalServerError, ProductNotFoundError, NotValidException {
         logger.info("enter product code");
         int productCode = scanner.nextInt();
         logger.info("enter product name");

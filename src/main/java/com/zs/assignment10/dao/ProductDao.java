@@ -35,6 +35,10 @@ public class ProductDao {
         dbConnection = new DBConnection();
     }
 
+    public ProductDao(DBConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
     /**
      * Inserts product in the database.
      * @param product
