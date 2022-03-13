@@ -18,21 +18,26 @@ import java.util.List;
  */
 public class CategoryDao {
     DBConnection dbConnection;
-    public CategoryDao(){
+
+    public CategoryDao() {
         dbConnection = new DBConnection();
     }
-    public CategoryDao(DBConnection dbConnection){
+
+    final String QUERY = "select DISTINCT category_name from Category";
+
+    public CategoryDao(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
     }
+
     /**
      * Gets all the categories present in the table.
+     *
      * @return
      * @throws InternalServerError
      */
     public List<String> getAll() throws InternalServerError {
 
         ArrayList<String> categoryList = new ArrayList<>();
-        final String QUERY = "select DISTINCT category_name from Category";
         Statement statement;
         try {
             Connection con = dbConnection.connectionToDatabase();
@@ -49,8 +54,6 @@ public class CategoryDao {
         return categoryList;
 
     }
-
-
 
 
 }

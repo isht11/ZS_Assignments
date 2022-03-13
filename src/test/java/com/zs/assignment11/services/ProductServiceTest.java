@@ -4,6 +4,7 @@ import com.zs.assignment11.dao.ProductDao;
 import com.zs.assignment11.entity.Category;
 import com.zs.assignment11.entity.Product;
 import com.zs.assignment11.exceptions.InternalServerError;
+import com.zs.assignment11.exceptions.NotValidException;
 import com.zs.assignment11.exceptions.ProductNotFoundError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void saveProduct() throws InternalServerError, ProductNotFoundError {
+    void saveProduct() throws InternalServerError, ProductNotFoundError, NotValidException {
         Product product = new Product(1, "Dell", 20F);
         Category category = new Category(1, "electronics", 1);
         productService.saveProduct(product, category);
@@ -42,13 +43,13 @@ class ProductServiceTest {
     }
 
     @Test
-    void getAllProductByCategory() throws InternalServerError {
+    void getAllProductByCategory() throws InternalServerError, NotValidException {
         when(productDao.findAllInCategory("electronics")).thenReturn(Arrays.asList("dell"));
         assertEquals("dell", productService.getAllProductByCategory("electronics").get(0));
     }
 
     @Test
-    void updateProduct() throws InternalServerError, ProductNotFoundError {
+    void updateProduct() throws InternalServerError, ProductNotFoundError, NotValidException {
         Product product = new Product(1, "Dell", 20F);
         productService.updateProduct(product, product.getId());
         verify(productDao, times(1)).updateProduct(product.getId(), product);

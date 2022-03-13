@@ -21,15 +21,25 @@ import java.util.List;
  */
 public class ProductDao {
     DBConnection dbConnection;
-    public ProductDao(){
+
+    public ProductDao() {
         dbConnection = new DBConnection();
     }
 
-    public ProductDao(DBConnection dbConnection){
+    final String existQuery = "SELECT COUNT(*) FROM product WHERE product_id = ?";
+    final String updateQuery = "update product set product_name = ?, price = ? where product_id=?";
+    final String listQuery = "select * from product";
+    final String findQuery = "select product.product_name from product INNER JOIN category ON category.product_id = product.product_id where category_name = ?";
+    final String saveQuery1 = "INSERT INTO Product VALUES(?,?,?);";
+    final String saveQuery2 = "INSERT INTO Category VALUES(?,?,?);";
+
+    public ProductDao(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
     }
+
     /**
      * Saves the product to the table.
+     *
      * @param product
      * @param category
      * @throws InternalServerError
@@ -37,13 +47,19 @@ public class ProductDao {
     public void save(Product product, Category category) throws InternalServerError {
 
         Connection con = dbConnection.connectionToDatabase();
-        Statement statement;
-        String QUERY1= "INSERT INTO Product VALUES(" + product.getId() + ", '" + product.getProductName() + "'," + product.getPrice() + ");";
-        String QUERY2 = "INSERT INTO Category VALUES(" + category.getCategoryId() + ", '" + category.getCategoryName() + "'," + product.getId() + ");";
+        PreparedStatement statement1;
+        PreparedStatement statement2;
         try {
-            statement = con.createStatement();
-            statement.executeUpdate(QUERY1);
-            statement.executeUpdate(QUERY2);
+            statement1 = con.prepareStatement(saveQuery1);
+            statement2 = con.prepareStatement(saveQuery2);
+            statement1.setInt(1, product.getId());
+            statement1.setString(2, product.getProductName());
+            statement1.setFloat(3, product.getPrice());
+            statement2.setInt(1, category.getCategoryId());
+            statement2.setString(2, category.getCategoryName());
+            statement2.setInt(3, product.getId());
+            statement1.executeUpdate(saveQuery1);
+            statement2.executeUpdate(saveQuery2);
             con.close();
         } catch (SQLException e) {
             throw new InternalServerError("SQL exception occurred");
@@ -53,15 +69,15 @@ public class ProductDao {
 
     /**
      * Updates the product details in the table.
+     *
      * @param productId
      * @param product
      * @throws InternalServerError
      */
     public void updateProduct(Integer productId, Product product) throws InternalServerError {
-        String QUERY= "update product set product_name = ?, price = ? where product_id=?";
         try {
             Connection con = dbConnection.connectionToDatabase();
-            PreparedStatement preparedStatement = con.prepareStatement(QUERY);
+            PreparedStatement preparedStatement = con.prepareStatement(updateQuery);
             preparedStatement.setString(1, product.getProductName());
             preparedStatement.setFloat(2, product.getPrice());
             preparedStatement.setInt(3, productId);
@@ -75,17 +91,17 @@ public class ProductDao {
 
     /**
      * returns all the products in the table.
+     *
      * @return
      * @throws InternalServerError
      */
     public List<Product> findAll() throws InternalServerError {
         ArrayList<Product> productList = new ArrayList<>();
-        String QUERY = "select * from product";
         Statement statement;
         try {
             Connection con = dbConnection.connectionToDatabase();
             statement = con.createStatement();
-            ResultSet resultSet = statement.executeQuery(QUERY);
+            ResultSet resultSet = statement.executeQuery(listQuery);
             while (resultSet.next()) {
                 Product product = new Product();
                 product.setId(resultSet.getInt(1));
@@ -103,19 +119,19 @@ public class ProductDao {
 
     /**
      * Returns all the products present in the user defined category.
+     *
      * @param parent
      * @return
      * @throws InternalServerError
      */
     public List<String> findAllInCategory(String parent) throws InternalServerError {
         ArrayList<String> productList = new ArrayList<>();
-        String QUERY = "select product.product_name from product INNER JOIN category ON category.product_id = product.product_id where category_name = ?";
         PreparedStatement preparedStatement;
         try {
             Connection con = dbConnection.connectionToDatabase();
-            preparedStatement= con.prepareStatement(QUERY);
-            preparedStatement.setString(1,parent);
-            ResultSet resultSet=preparedStatement.executeQuery();
+            preparedStatement = con.prepareStatement(findQuery);
+            preparedStatement.setString(1, parent);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 productList.add(resultSet.getString(1));
             }
@@ -126,9 +142,9 @@ public class ProductDao {
         return productList;
 
     }
+
     public boolean exist(int productCode) throws InternalServerError {
         ResultSet resultSet;
-        String existQuery = "SELECT COUNT(*) FROM product WHERE product_id = ?";
         try {
             Connection con = dbConnection.connectionToDatabase();
             PreparedStatement preparedStatement = con.prepareStatement(existQuery);

@@ -12,12 +12,9 @@ import com.zs.assignment11.services.ProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,22 +36,20 @@ public class ProductController {
     /**
      * Saves the product in the database.
      *
-     * @param productId
-     * @param productName
-     * @param price
-     * @param categoryId
-     * @param categoryName
+     * @param product
+     * @param category
+     * @return
      */
     @PostMapping("/ecommerce/product")
-    public void saveProduct(@RequestParam int productId, @RequestParam String productName, @RequestParam Float price, @RequestParam int categoryId, @RequestParam String categoryName) {
-        Product product = new Product(productId, productName, price);
-        Category category = new Category(categoryId, categoryName, productId);
+    public ResponseEntity<?> saveProduct(@RequestBody Product product, @RequestBody Category category) {
         try {
             productService.saveProduct(product, category);
-        } catch (InternalServerError | ProductNotFoundError | NotValidException e) {
-            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (InternalServerError e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        } catch (NotValidException | ProductNotFoundError e) {
+            return ResponseEntity.status(400).body(e.getMessage());
         }
-        logger.info("product saved successfully..!!");
 
     }
 
@@ -64,15 +59,14 @@ public class ProductController {
      * @return
      */
     @GetMapping("/ecommerce/products")
-    public List<Product> getAllProducts() {
+    public ResponseEntity<?> getAllProducts() {
         List<Product> productList = null;
         try {
             productList = productService.getAllProducts();
+            return ResponseEntity.status(HttpStatus.OK).body(productList);
         } catch (InternalServerError e) {
-            logger.error(e.getMessage());
+            return ResponseEntity.status(500).body(e.getMessage());
         }
-        logger.info("fetch all the product ");
-        return productList;
     }
 
     /**
@@ -82,32 +76,33 @@ public class ProductController {
      * @return
      */
     @GetMapping("/ecommerce/{categoryName}")
-    public List<String> getProductsByCategory(@PathVariable String categoryName) {
+    public ResponseEntity<?> getProductsByCategory(@PathVariable String categoryName) {
         List<String> result = null;
         try {
             result = productService.getAllProductByCategory(categoryName);
-        } catch (InternalServerError | NotValidException e) {
-            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (InternalServerError e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        } catch (NotValidException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
         }
-        logger.info("fetch all product by category");
-        return result;
     }
 
     /**
      * Updates the product in the present in the table.
      *
-     * @param productId
-     * @param productName
-     * @param price
+     * @param product
      */
     @PutMapping("/ecommerce/update")
-    public void update(@RequestParam int productId, @RequestParam String productName, @RequestParam Float price) {
-        Product product = new Product(productId, productName, price);
+    public ResponseEntity<?> update(@RequestBody Product product) {
+
         try {
-            this.productService.updateProduct(product, product.getId());
-        } catch (ProductNotFoundError | InternalServerError | NotValidException e) {
-            logger.error(e.getMessage());
+            productService.updateProduct(product, product.getId());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (ProductNotFoundError | NotValidException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (InternalServerError e) {
+            return ResponseEntity.status(500).body(e.getMessage());
         }
-        logger.info("product updated successfully ..!!");
     }
 }

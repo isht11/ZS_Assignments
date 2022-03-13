@@ -1,122 +1,129 @@
 package com.zs.assignment11.dao;
 
 import com.zs.assignment11.dbConnection.DBConnection;
+import com.zs.assignment11.entity.Category;
+import com.zs.assignment11.entity.Product;
 import com.zs.assignment11.exceptions.InternalServerError;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.Connection;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class ProductDaoTest {
     ProductDao productDao;
     DBConnection dBConnection;
+    Connection mockConnection;
+    ResultSet resultSet;
 
     @BeforeEach
     public void setUp() {
         dBConnection = mock(DBConnection.class);
         productDao = new ProductDao(dBConnection);
+        resultSet = mock(ResultSet.class);
+        mockConnection = mock(Connection.class);
     }
 
     @Test
-    void save() throws SQLException, InternalServerError {
-        Statement statement=mock(Statement.class);
-        Connection mockConnection=mock(Connection.class);
+    public void testSaveException() throws SQLException, InternalServerError {
+        Connection mockConnection = mock(Connection.class);
+        PreparedStatement mockStatement = mockConnection.prepareStatement(anyString());
+        Product product = new Product(1, "laptop", 20F);
+        Category category = new Category(1, "electronics", 1);
         when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
-        when(mockConnection.createStatement()).thenReturn(statement);
-        when(statement.executeUpdate(anyString())).thenReturn(1);
-        assertEquals(1, statement.executeUpdate(anyString()));
-    }
-
-    @Test
-    void updateProduct() throws SQLException, InternalServerError {
-        Statement statement=mock(Statement.class);
-        Connection mockConnection=mock(Connection.class);
-        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
-        when(mockConnection.createStatement()).thenReturn(statement);
-        when(statement.executeUpdate(anyString())).thenReturn(1);
-        assertEquals(1, statement.executeUpdate(anyString()));
-    }
-
-    @Test
-    void findAll() throws InternalServerError, SQLException {
-        PreparedStatement statement = mock(PreparedStatement.class);
-        Connection mockConnection=mock(Connection.class);
-        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
-        when(mockConnection.prepareStatement(anyString())).thenReturn(statement);
-        ResultSet set = mock(ResultSet.class);
-        when(statement.executeQuery(anyString())).thenReturn(set);
-        when(set.next()).thenReturn(true);
-        when(set.getInt(1)).thenReturn(1);
-        assertEquals(1, set.getInt(1));
-    }
-
-    @Test
-    void findAllInCategory() throws SQLException, InternalServerError {
-        PreparedStatement statement = mock(PreparedStatement.class);
-        Connection mockConnection=mock(Connection.class);
-        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
-        when(mockConnection.prepareStatement(anyString())).thenReturn(statement);
-        ResultSet set = mock(ResultSet.class);
-        when(statement.executeQuery(anyString())).thenReturn(set);
-        when(set.next()).thenReturn(true);
-        when(set.getInt(1)).thenReturn(1);
-        assertEquals(1, set.getInt(1));
-
-    }
-
-    @Test
-    void testSaveException() throws SQLException, InternalServerError {
-        Connection conn = mock(Connection.class);
-        Statement statement = mock(Statement.class);
-        doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
-        doThrow(SQLException.class).when(conn).createStatement();
-        doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        when(mockConnection.createStatement()).thenReturn(mockStatement);
+        doThrow(SQLException.class).when(mockConnection).prepareStatement(anyString());
+        assertThrows(InternalServerError.class, () -> productDao.save(product, category));
     }
 
     @Test
     void testUpdateProductException() throws SQLException, InternalServerError {
-        Connection conn = mock(Connection.class);
-        Statement statement = mock(Statement.class);
-        doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
-        doThrow(SQLException.class).when(conn).createStatement();
-        doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
-    }
-    @Test
-    void testFindAllException() throws SQLException, InternalServerError {
-        Connection conn = mock(Connection.class);
-        Statement statement = mock(Statement.class);
-        doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
-        doThrow(SQLException.class).when(conn).createStatement();
-        doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
-    }
-    @Test
-    void testFindAllInCategoryException() throws SQLException, InternalServerError {
-        Connection conn = mock(Connection.class);
-        Statement statement = mock(Statement.class);
-        doThrow(InternalServerError.class).when(dBConnection).connectionToDatabase();
-        doThrow(SQLException.class).when(conn).createStatement();
-        doThrow(SQLException.class).when(statement).executeUpdate(anyString());
-        Assertions.assertThrows(SQLException.class ,()->statement.executeUpdate(anyString()));
-        Assertions.assertThrows(InternalServerError.class ,()->dBConnection.connectionToDatabase());
-        Assertions.assertThrows(SQLException.class ,()->conn.createStatement());
+        Connection mockConnection = mock(Connection.class);
+        PreparedStatement mockStatement = mockConnection.prepareStatement(anyString());
+        Product product = new Product(1, "laptop", 20F);
+        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
+        when(mockConnection.createStatement()).thenReturn(mockStatement);
+        doThrow(SQLException.class).when(mockConnection).prepareStatement(anyString());
+        assertThrows(InternalServerError.class, () -> productDao.updateProduct(product.getId(), product));
     }
 
+    @Test
+    void findAll() throws InternalServerError, SQLException {
+        Connection mockConnection = mock(Connection.class);
+        Statement mockStatement = mock(Statement.class);
+        Product product = new Product(1, "laptop", 20F);
+        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
+        when(mockConnection.createStatement()).thenReturn(mockStatement);
+        when(mockStatement.executeQuery(anyString())).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt(1)).thenReturn(1);
+        assertEquals(1, productDao.findAll().get(0).getId());
+    }
+
+    @Test
+    void testFindAllException() throws InternalServerError, SQLException {
+        Connection mockConnection = mock(Connection.class);
+        Statement mockStatement = mock(Statement.class);
+        Product product = new Product(1, "laptop", 20F);
+        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
+        when(mockConnection.createStatement()).thenReturn(mockStatement);
+        doThrow(SQLException.class).when(mockConnection).createStatement();
+        assertThrows(InternalServerError.class, () -> productDao.findAll());
+
+    }
+
+    @Test
+    void findAllInCategory() throws SQLException, InternalServerError {
+        Connection mockConnection = mock(Connection.class);
+        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
+        PreparedStatement mockStatement = mock(PreparedStatement.class);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString(1)).thenReturn("laptop");
+        assertEquals("laptop", productDao.findAllInCategory("Electronics").get(0));
+
+    }
+
+    @Test
+    void testFindAllInCategoryException() throws SQLException, InternalServerError {
+        Connection mockConnection = mock(Connection.class);
+        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
+        PreparedStatement mockStatement = mock(PreparedStatement.class);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        doThrow(SQLException.class).when(mockConnection).prepareStatement(anyString());
+        assertThrows(InternalServerError.class, () -> productDao.findAllInCategory("electronics"));
+    }
+
+
+    @Test
+    void testExistException() throws InternalServerError, SQLException {
+        Connection mockConnection = mock(Connection.class);
+        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
+        PreparedStatement mockStatement = mock(PreparedStatement.class);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        doThrow(SQLException.class).when(mockConnection).prepareStatement(anyString());
+        assertThrows(InternalServerError.class, () -> productDao.exist(1));
+    }
+
+    @Test
+    void exist() throws InternalServerError, SQLException {
+        Connection mockConnection = mock(Connection.class);
+        when(dBConnection.connectionToDatabase()).thenReturn(mockConnection);
+        PreparedStatement mockStatement = mock(PreparedStatement.class);
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt(1)).thenReturn(1);
+        assertEquals(true, productDao.exist(1));
+
+    }
 }
